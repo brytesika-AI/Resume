@@ -166,7 +166,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     // ── Engine 3: F5-TTS on Hugging Face (Keyless Voice Clone) ──────────────
     // Clones Bright's actual voice from /bright_voice_ref.wav without API keys!
-    if (voiceId === 'f5_clone' || !context.env.ELEVENLABS_API_KEY) {
+    if (effectiveVoiceId === 'f5_clone' || !context.env.ELEVENLABS_API_KEY) {
       try {
         const origin = new URL(context.request.url).origin;
         const audioUrl = `${origin}/bright_voice_ref.wav`;
