@@ -411,51 +411,51 @@ Alternatively, paste a job specification in the 'Job Matcher' tab on the right s
     ]);
   };
 
+  // Parse inline bold (**bold**) and links ([text](url))
+  const parseInlineStyle = (lineText: string) => {
+    const parts: (string | React.ReactNode)[] = [];
+    const regex = /(\*\*([\s\S]+?)\*\*|\[([\s\S]+?)\]\(([\s\S]+?)\))/g;
+    let lastIndex = 0;
+    let match;
+    
+    while ((match = regex.exec(lineText)) !== null) {
+      const textBefore = lineText.substring(lastIndex, match.index);
+      if (textBefore) {
+        parts.push(textBefore);
+      }
+      
+      if (match[2]) {
+        // Bold match
+        parts.push(<strong key={match.index} style={{ color: '#fff', fontWeight: 600 }}>{match[2]}</strong>);
+      } else if (match[3] && match[4]) {
+        // Link match
+        parts.push(
+          <a 
+            key={match.index} 
+            href={match[4]} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style={{ color: 'var(--color-orchestrator)', textDecoration: 'underline' }}
+          >
+            {match[3]}
+          </a>
+        );
+      }
+      lastIndex = regex.lastIndex;
+    }
+    
+    const textAfter = lineText.substring(lastIndex);
+    if (textAfter) {
+      parts.push(textAfter);
+    }
+    
+    return parts.length > 0 ? parts : lineText;
+  };
+
   // Helper to render basic markdown elements (headers, bold, lists, dividers, links)
   const renderMarkdown = (text: string) => {
     if (!text) return null;
     
-    // Parse inline bold (**bold**) and links ([text](url))
-    const parseInlineStyle = (lineText: string) => {
-      const parts: (string | React.ReactNode)[] = [];
-      const regex = /(\*\*([\s\S]+?)\*\*|\[([\s\S]+?)\]\(([\s\S]+?)\))/g;
-      let lastIndex = 0;
-      let match;
-      
-      while ((match = regex.exec(lineText)) !== null) {
-        const textBefore = lineText.substring(lastIndex, match.index);
-        if (textBefore) {
-          parts.push(textBefore);
-        }
-        
-        if (match[2]) {
-          // Bold match
-          parts.push(<strong key={match.index} style={{ color: '#fff', fontWeight: 600 }}>{match[2]}</strong>);
-        } else if (match[3] && match[4]) {
-          // Link match
-          parts.push(
-            <a 
-              key={match.index} 
-              href={match[4]} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              style={{ color: 'var(--color-orchestrator)', textDecoration: 'underline' }}
-            >
-              {match[3]}
-            </a>
-          );
-        }
-        lastIndex = regex.lastIndex;
-      }
-      
-      const textAfter = lineText.substring(lastIndex);
-      if (textAfter) {
-        parts.push(textAfter);
-      }
-      
-      return parts.length > 0 ? parts : lineText;
-    };
-
     return text.split('\n').map((line, idx) => {
       const trimmed = line.trim();
       
@@ -688,7 +688,7 @@ I put this directly into practice by building **Tiny Tamagotchi MVP** using stri
 1. How does spec-driven development compare to traditional prompt engineering in your experience?
 2. How are you applying the Google ADK principles to your production work at MultiChoice?`;
         } else if (lowercaseText.includes('project') || lowercaseText.includes('shipped') || lowercaseText.includes('product') || lowercaseText.includes('built') || lowercaseText.includes('portfolio') || lowercaseText.includes('kavango') || lowercaseText.includes('dischem') || lowercaseText.includes('mineral')) {
-          simulatedReply = `I have eight live production systems deployed across diverse domains — each solving a real problem in the African and emerging market context.
+          simulatedReply = `I have 15 live and prototype systems deployed across diverse domains — each solving a real problem in the African and emerging market context.
 
 **Kavango & Mineral Intelligence** is a CEO-facing critical-minerals exploration platform for Africa, modelled on KoBold's TerraShed — with geological-rulebook scoring, an 'Induna' geologist agent, copper prospectivity mapping achieving a **0.903 ROC-AUC** over a 12,100-cell prediction grid, and Morupule Predictive Intelligence for coal mine equipment scenario advisory (browser-based Transformers.js).
 
@@ -736,7 +736,7 @@ I have **13+ years** translating complex data into strategic assets across media
 
 I was **selected for the MultiChoice Executive Head Training Program** in April 2024. I'm equally credible presenting to the Group CTO and resolving P1 production incidents in raw device logs.
 
-I have **8 live production AI systems** deployed on cloud infrastructure — including the Kavango mineral intelligence platform, AfriCare (pan-African health AI across 15 nations), abfAgri (SADC agricultural intelligence), and SentimentCommand (Zambia 2026 election intelligence). You can explore them all in the portfolio panel.
+I have **15 live and prototype AI systems** deployed on cloud infrastructure — including the Kavango mineral intelligence platform, AfriCare (pan-African health AI across 15 nations), abfAgri (SADC agricultural intelligence), SentimentCommand (Zambia 2026 election intelligence), and MOSAIC (Enterprise Architecture decision board). You can explore them all in the portfolio panel.
 
 What would you like to explore?
 
@@ -1305,9 +1305,9 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '0.4rem',
-                    width: isAgent ? '100%' : 'auto',
-                    maxWidth: isAgent ? '100%' : '82%',
-                    alignSelf: isAgent ? 'stretch' : 'flex-end',
+                    width: 'auto',
+                    maxWidth: '85%',
+                    alignSelf: isAgent ? 'flex-start' : 'flex-end',
                     minWidth: 0,
                   }}>
                     <div 
@@ -1592,7 +1592,7 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                     </div>
                     <ul className="timeline-bullets" style={{ gap: '0.25rem', paddingLeft: '0.75rem' }}>
                       {job.bullets.map((bullet, bIndex) => (
-                        <li key={bIndex} style={{ fontSize: '0.8rem', lineHeight: '1.4' }}>{bullet}</li>
+                        <li key={bIndex} style={{ fontSize: '0.8rem', lineHeight: '1.4' }}>{parseInlineStyle(bullet)}</li>
                       ))}
                     </ul>
                   </div>
