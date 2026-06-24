@@ -93,6 +93,15 @@ export const cvData: CVData = {
       techStack: ["Databricks SQL", "Python", "Power BI", "FAS Model", "Nielsen/BRC Reconciliation"]
     },
     {
+      id: "chicken-iq",
+      title: "ChickenIQ Poultry App",
+      description: "Vibrant, design-first poultry disease diagnosis and yield prediction app. Fully local-storage persisted, features multi-language support (English, Bemba, Nyanja) and interactive diagnosis questions.",
+      liveUrl: "https://chicken-iq.pages.dev",
+      github: "https://github.com/brytesika-AI/ChickenIQ",
+      sector: "Agriculture & Health",
+      techStack: ["React", "Vite", "Tailwind CSS", "Local Storage", "Internationalization"]
+    },
+    {
       id: "morupule-predictive",
       title: "Morupule Predictive Mining Intelligence",
       description: "Predictive scenario advisor for the Morupule coalfield. Forecasts coal yields, machinery duty cycles, and environmental compliance parameters using multivariate time-series models.",
@@ -132,10 +141,37 @@ export const cvData: CVData = {
       id: "abfagri",
       title: "abfAgri SADC Agricultural Intelligence",
       description: "Consequence-aware AI for SADC farmers. Integrates live SAFEX commodity prices, satellite field monitoring, AI-powered crop diagnosis, and Omnia product recommendations to address food security.",
-      liveUrl: "https://abfagriculturenext.vercel.app",
+      liveUrl: "https://abfagri.pages.dev",
       github: "https://github.com/brytesika-AI/abf_agriculture_intelligience",
       sector: "Agriculture & Health",
       techStack: ["React", "FastAPI", "SAFEX API", "Satellite Imagery API", "Llama 3.1"]
+    },
+    {
+      id: "betcopilot-ai",
+      title: "BetCopilot AI Sports Showcase",
+      description: "Sports forecasting and predictive analytics dashboard. Renders match-outcome probabilities using local ML modeling engines.",
+      liveUrl: "https://betcopilot-ai-showcase.pages.dev",
+      github: "https://github.com/brytesika-AI/BetCopilot-AI",
+      sector: "Strategy & Politics",
+      techStack: ["React", "Vite", "Tailwind CSS", "Recharts", "ML Modeling"]
+    },
+    {
+      id: "tiny-tamagotchi",
+      title: "Tiny Tamagotchi MVP",
+      description: "Gamified simulation showcase designed using strict spec-driven development. Features interactive micro-animations, local state persistence, and responsive controls.",
+      liveUrl: "https://tiny-tamagotchi-mvp.pages.dev",
+      github: "https://github.com/brytesika-AI/Tiny-Tamagotchi-MVP",
+      sector: "Strategy & Politics",
+      techStack: ["React", "Vite", "Tailwind CSS", "Framer Motion", "Jest"]
+    },
+    {
+      id: "hustle-ai-platforms",
+      title: "Hustle AI Platforms Suite",
+      description: "Multi-tenant business intelligence dashboards (CX, Fraud, Inventory, Revenue, Risk, Workforce) optimized for side-hustle business owners to sync operations.",
+      liveUrl: "https://hustle-revenue-intelligence.pages.dev",
+      github: "https://github.com/brytesika-AI/hustle-ai-platforms",
+      sector: "Retail & Strategy",
+      techStack: ["React", "Vite", "Tailwind CSS", "Recharts", "Multi-Tenant"]
     },
     {
       id: "africare",
@@ -159,7 +195,7 @@ export const cvData: CVData = {
       id: "aisrf",
       title: "AI-SRF PhD Thesis Artifact",
       description: "A 9-agent AI governance system for strategic resilience in emerging markets. Features African-archetype personas (The Tracker, The Induna, The Auditor) across five iterative stages. Implements ROR metrics and GEPA/DSPy.",
-      liveUrl: "#",
+      liveUrl: "https://ai-srf-dashboard.pages.dev",
       github: "https://github.com/brytesika-AI/1PhD-Thesis---AI-in-strategic-Decision-making",
       sector: "Strategy & Politics",
       techStack: ["Cloudflare Workers", "Cloudflare D1/KV", "DSPy/GEPA", "Groq", "FastAPI", "Python", "Streamlit"]
@@ -190,6 +226,33 @@ export const cvData: CVData = {
       github: "https://github.com/brytesika-AI/MOSAIC-Merchant-OS-Architecture-Investment-Cockpit-v3.0-",
       sector: "Retail & Strategy",
       techStack: ["Cloudflare Workers", "Cloudflare D1", "Next.js", "React", "Multi-Agent AI", "TOGAF", "TIME Portfolio"]
+    },
+    {
+      id: "geospatial-analysis-minerals",
+      title: "Geospatial Analysis of Minerals",
+      description: "Spatial analytics pipeline for mineral deposits in SADC regions. Integrates multi-spectral GIS mapping and deposit risk scoring.",
+      liveUrl: "#",
+      github: "https://github.com/brytesika-AI/Geospatial-Analysis-of-Minerals",
+      sector: "Mining & Geology",
+      techStack: ["Python", "Streamlit", "GeoPandas", "Shapely", "GIS Mapping"]
+    },
+    {
+      id: "critical-minerals-intelligence",
+      title: "Critical Minerals Intelligence Africa",
+      description: "Analytical supply chain risk-scoring dashboard for critical mineral deposits across SADC regions.",
+      liveUrl: "#",
+      github: "https://github.com/brytesika-AI/Critical-Minerals-Intelligience-Africa",
+      sector: "Mining & Geology",
+      techStack: ["Python", "Streamlit", "Pandas", "Risk Modeling"]
+    },
+    {
+      id: "ai-srf-streamlit-app",
+      title: "AI-SRF Streamlit Portal",
+      description: "Python Streamlit deployment of the AI-Augmented Strategic Reasoning Framework (AI-SRF) for corporate consultants.",
+      liveUrl: "#",
+      github: "https://github.com/brytesika-AI/ai_srf_streamlit_app",
+      sector: "Strategy & Politics",
+      techStack: ["Python", "Streamlit", "LangChain", "Multi-Agent System"]
     },
     {
       id: "powerbi-fleet-mining",
