@@ -1022,7 +1022,6 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                   height: '6px', 
                   backgroundColor: '#10b981', 
                   borderRadius: '50%',
-                  boxShadow: '0 0 8px #10b981',
                   marginLeft: '0.25rem'
                 }}></span>
               </h3>
@@ -1099,7 +1098,7 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                 <div className="voice-modal voice-studio-modal" onClick={e => e.stopPropagation()}>
                   <div className="voice-modal-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <Volume2 size={16} color="#a855f7" />
+                      <Volume2 size={16} color="var(--color-orchestrator)" />
                       <span>AI Voice Studio</span>
                     </div>
                     <button
@@ -1227,7 +1226,7 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                       </div>
 
                       {isCloning && (
-                        <div className="voice-sample-exists" style={{ color: '#a855f7', borderColor: 'rgba(168, 85, 247, 0.2)', background: 'rgba(168, 85, 247, 0.06)' }}>
+                        <div className="voice-sample-exists" style={{ color: 'var(--color-orchestrator)', borderColor: 'rgba(var(--color-orchestrator-rgb), 0.2)', background: 'rgba(var(--color-orchestrator-rgb), 0.06)' }}>
                           <span className="synth-spinner" style={{ marginRight: '0.35rem' }}><span /></span>
                           Uploading voice sample to ElevenLabs...
                         </div>
@@ -1256,7 +1255,7 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                               onClick={cloneFromReferenceFile} 
                               className="record-btn" 
                               style={{ 
-                                background: 'linear-gradient(135deg, var(--color-accent) 0%, #d946ef 100%)', 
+                                background: 'var(--color-orchestrator)', 
                                 border: 'none',
                                 color: 'white'
                               }}
@@ -1566,7 +1565,7 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                 <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '0.85rem', wordBreak: 'break-word' }}>
                   {cvData.personalInfo.summary}
                 </p>
-                <div style={{ marginTop: '0.5rem', padding: '0.75rem', borderLeft: '3px solid var(--color-strategy)', background: 'rgba(16, 185, 129, 0.03)', width: '100%', boxSizing: 'border-box' }}>
+                <div style={{ marginTop: '0.5rem', padding: '0.75rem', borderLeft: '3px solid var(--color-strategy)', background: 'rgba(var(--color-strategy-rgb), 0.04)', width: '100%', boxSizing: 'border-box' }}>
                   <h4 style={{ color: 'var(--color-strategy)', display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.25rem', fontSize: '0.9rem', flexWrap: 'wrap', wordBreak: 'break-word' }}>
                     <Shield size={14} style={{ flexShrink: 0 }} />
                     PhD Research Focus
@@ -1766,7 +1765,7 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                           fontSize: '1.05rem',
                           fontFamily: 'var(--font-mono)',
                           color: sColor.primary,
-                          boxShadow: `0 0 10px rgba(${sColor.rgb === '16, 185, 129' ? '16, 185, 129' : sColor.rgb === '245, 158, 11' ? '245, 158, 11' : '239, 68, 68'}, 0.15)`,
+                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
                           flexShrink: 0
                         }}>
                           {jobAnalysis.score}%
@@ -1848,7 +1847,7 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                         display: 'inline-flex', 
                         alignItems: 'center', 
                         justifyContent: 'center', 
-                        background: 'rgba(16, 185, 129, 0.1)', 
+                        background: 'rgba(var(--color-strategy-rgb), 0.1)', 
                         color: 'var(--color-strategy)', 
                         borderRadius: '50%', 
                         width: '18px', 

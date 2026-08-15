@@ -84,6 +84,15 @@ export const cvData: CVData = {
   ],
   projects: [
     {
+      id: "strategylab-ai",
+      title: "StrategyLab AI | McKinsey-Grade Business Strategy Decision Engine",
+      description: "McKinsey-grade business strategy decision engine providing analytical frameworks, structured MECE problem-solving, and automated strategic validation of business initiatives using agentic LLM workflows.",
+      liveUrl: "https://strategylab-ai.bryte-sika.workers.dev/",
+      github: "https://github.com/brytesika-AI/strategylab-ai",
+      sector: "Strategy & Politics",
+      techStack: ["Cloudflare Workers", "React", "AI Decision Engine", "McKinsey Frameworks", "MECE"]
+    },
+    {
       id: "football-fan-segmentation",
       title: "Canal+ Football Fan Segmentation",
       description: "Designed and delivered a full-base football fan segmentation model across 7.81M South African subscribers for Canal+. Engineered the Football Affinity Score (FAS) weighted composite index calibrated against ~392K connected-decoder truth set.",
