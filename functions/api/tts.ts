@@ -173,7 +173,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         const audioRes = await fetch(audioUrl);
         if (audioRes.ok) {
           const audioBlob = await audioRes.blob();
-          const app = await Client.connect('mrfakename/E2-F5-TTS');
+          const hfToken = context.env.HF_TOKEN || context.env.HF_API_KEY;
+          const app = await Client.connect('mrfakename/E2-F5-TTS', hfToken ? { token: hfToken } : undefined);
           const refText = "if it's a five agent system which helps you forensic check and if it didn't manage issues it plays devil's advocate agents where they work against each other to cut friend the surface these issues so as long as there's a signal in the market";
           const result = await app.predict('/predict', [
             audioBlob, // ref_audio
@@ -211,7 +212,13 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
             ? JSON.stringify(err)
             : String(err);
         console.error('F5-TTS Error:', errMsg);
-        return jsonResp({ error: `F5-TTS Exception: ${errMsg}` }, 500);
+        
+        let userError = `F5-TTS Exception: ${errMsg}`;
+        if (errMsg.includes('ZeroGPU') || errMsg.includes('quota') || errMsg.includes('quota exceeded') || errMsg.includes('exceeded your ZeroGPU')) {
+          userError = "Hugging Face ZeroGPU quota exceeded. Because Cloudflare Edge servers share IP addresses, you must add a free Hugging Face User Access Token (HF_TOKEN) to your Cloudflare Pages Environment Variables to get a dedicated voice cloning quota. Register and get a free token at https://huggingface.co/settings/tokens.";
+        }
+        
+        return jsonResp({ error: userError, fallback: true }, 500);
       }
     }
 
