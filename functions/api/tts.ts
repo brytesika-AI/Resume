@@ -195,12 +195,19 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
               }
               const audioData = `data:audio/wav;base64,${btoa(binary)}`;
               return jsonResp({ audioData, provider: 'huggingface-f5tts' });
+            } else {
+              return jsonResp({ error: `Failed to fetch generated audio from HF: ${soundRes.status} ${soundRes.statusText}` }, 500);
             }
+          } else {
+            return jsonResp({ error: "F5-TTS response did not contain expected audio data" }, 500);
           }
+        } else {
+          return jsonResp({ error: `Failed to fetch local reference audio: ${audioRes.status} ${audioRes.statusText} URL: ${audioUrl}` }, 500);
         }
       } catch (err: unknown) {
         const errMsg = err instanceof Error ? err.message : String(err);
         console.error('F5-TTS Error:', errMsg);
+        return jsonResp({ error: `F5-TTS Exception: ${errMsg}` }, 500);
       }
     }
 
