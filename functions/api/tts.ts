@@ -174,9 +174,10 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         if (audioRes.ok) {
           const audioBlob = await audioRes.blob();
           const app = await Client.connect('mrfakename/E2-F5-TTS');
+          const refText = "if it's a five agent system which helps you forensic check and if it didn't manage issues it plays devil's advocate agents where they work against each other to cut friend the surface these issues so as long as there's a signal in the market";
           const result = await app.predict('/predict', [
             audioBlob, // ref_audio
-            '', // ref_text (Whisper auto-transcribe)
+            refText, // ref_text (transcription of bright_voice_ref.wav)
             plain, // gen_text
             false, // remove_silence
           ]);
