@@ -205,7 +205,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           return jsonResp({ error: `Failed to fetch local reference audio: ${audioRes.status} ${audioRes.statusText} URL: ${audioUrl}` }, 500);
         }
       } catch (err: unknown) {
-        const errMsg = err instanceof Error ? err.message : String(err);
+        const errMsg = err instanceof Error 
+          ? `${err.name}: ${err.message}\nStack: ${err.stack}` 
+          : typeof err === 'object' && err !== null
+            ? JSON.stringify(err)
+            : String(err);
         console.error('F5-TTS Error:', errMsg);
         return jsonResp({ error: `F5-TTS Exception: ${errMsg}` }, 500);
       }
