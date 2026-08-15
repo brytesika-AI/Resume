@@ -102,15 +102,7 @@ Alternatively, paste a job specification in the 'Job Matcher' tab on the right s
   });
   const [isSpeaking,     setIsSpeaking]     = useState(false);
   const [ttsEngine,      setTtsEngine]      = 
-    useState<'webspeech' | 'cloned_f5' | 'cloudflare_ai' | 'elevenlabs_deep_african' | 'elevenlabs_cloned' | 'elevenlabs_custom'>(() => {
-      if (typeof window !== 'undefined') {
-        const storedEngine = localStorage.getItem('bright_tts_engine');
-        if (storedEngine === 'webspeech' || storedEngine === 'cloned_f5' || storedEngine === 'cloudflare_ai' || storedEngine === 'elevenlabs_deep_african' || storedEngine === 'elevenlabs_cloned' || storedEngine === 'elevenlabs_custom') {
-          return storedEngine;
-        }
-      }
-      return 'cloned_f5';
-    });
+    useState<'webspeech' | 'cloned_f5' | 'cloudflare_ai' | 'elevenlabs_deep_african' | 'elevenlabs_cloned' | 'elevenlabs_custom'>('cloned_f5');
   const [voiceSample,    setVoiceSample]    = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('bright_voice_sample');

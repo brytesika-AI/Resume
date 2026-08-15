@@ -200,7 +200,6 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       } catch (err: unknown) {
         const errMsg = err instanceof Error ? err.message : String(err);
         console.error('F5-TTS Error:', errMsg);
-        adkLogs.push(`[ADK Error] F5-TTS failed: ${errMsg}`);
       }
     }
 
