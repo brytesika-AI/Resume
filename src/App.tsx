@@ -51,11 +51,11 @@ export default function App() {
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: 'agent',
-      text: `Hello! I'm Bright C. Sikazwe — AI Strategist, Data Platforms & Engineering Leader, and Acting Principal Engineer at MultiChoice Group (a Canal+ company). Welcome to my AI Digital Twin.
+      text: `Hello! I'm Bright C. Sikazwe — Executive AI, Data & Digital Leader, Founder of the brytesika-AI consulting practice, and Acting Principal Engineer at MultiChoice Group (a Canal+ company). Welcome to my AI Digital Twin.
 
-Ask me about my 13+ years of experience in AI, data platforms, telemetry forensics, executive analytics, or my PhD research on the AI-SRF framework at the University of Johannesburg.
+Ask me about my 17 years in AI, data platforms and executive analytics, my independent consulting work through brytesika-AI, or my PhD research on the AI-SRF framework at the University of Johannesburg.
 
-Alternatively, paste a job specification in the 'Job Matcher' tab on the right so I can give you a probability score of my match, explain my reasoning, and answer any follow-up questions you have!`
+Hiring for a role? Paste the job specification in the 'Job Matcher' tab. Looking for a consultant? Open 'Work With Me' to see how I help businesses build trusted data platforms and AI that pays for itself.`
     }
   ]);
   
@@ -68,8 +68,8 @@ Alternatively, paste a job specification in the 'Job Matcher' tab on the right s
     { type: 'info', text: 'Cloudflare Workers AI Llama-3.1 connection established. Ready for queries.' }
   ]);
 
-  const [activeTab, setActiveTab] = useState<'summary' | 'experience' | 'competencies' | 'certifications' | 'african-context' | 'research' | 'hobbies' | 'linkedin-posts' | 'job-matcher'>('summary');
-  const [portfolioFilter, setPortfolioFilter] = useState<'All' | 'Agriculture & Health' | 'Mining & Resources' | 'Telco & IoT' | 'Strategy & Politics'>('All');
+  const [activeTab, setActiveTab] = useState<'summary' | 'experience' | 'competencies' | 'certifications' | 'african-context' | 'research' | 'hobbies' | 'linkedin-posts' | 'job-matcher' | 'consulting'>('summary');
+  const [portfolioFilter, setPortfolioFilter] = useState<'All' | 'Agriculture & Health' | 'Mining & Resources' | 'Telco & IoT' | 'Fintech' | 'Strategy & Politics'>('All');
 
   // Job Spec Matcher States
   const [jobSpecText, setJobSpecText] = useState('');
@@ -387,9 +387,10 @@ Alternatively, paste a job specification in the 'Job Matcher' tab on the right s
   // Filter projects
   const filteredProjects = cvData.projects.filter(project => {
     if (portfolioFilter === 'All') return true;
-    if (portfolioFilter === 'Agriculture & Health') return project.sector === 'Agriculture' || project.sector === 'Healthcare';
+    if (portfolioFilter === 'Agriculture & Health') return project.sector.includes('Agriculture') || project.sector.includes('Health');
     if (portfolioFilter === 'Mining & Resources') return project.sector.includes('Mining') || project.sector.includes('Geology');
     if (portfolioFilter === 'Telco & IoT') return project.sector.includes('Telecommunications') || project.sector.includes('IoT');
+    if (portfolioFilter === 'Fintech') return project.sector === 'Fintech';
     if (portfolioFilter === 'Strategy & Politics') return project.sector.includes('Politics') || project.sector.includes('Research') || project.sector.includes('Strategy');
     return true;
   });
@@ -680,7 +681,7 @@ I put this directly into practice by building **Tiny Tamagotchi MVP** using stri
 1. How does spec-driven development compare to traditional prompt engineering in your experience?
 2. How are you applying the Google ADK principles to your production work at MultiChoice?`;
         } else if (lowercaseText.includes('project') || lowercaseText.includes('shipped') || lowercaseText.includes('product') || lowercaseText.includes('built') || lowercaseText.includes('portfolio') || lowercaseText.includes('kavango') || lowercaseText.includes('dischem') || lowercaseText.includes('mineral')) {
-          simulatedReply = `I have 15 live and prototype systems deployed across diverse domains — each solving a real problem in the African and emerging market context.
+          simulatedReply = `I have ${cvData.projects.length} live and prototype systems deployed across diverse domains — each solving a real problem in the African and emerging market context.
 
 **Kavango & Mineral Intelligence** is a CEO-facing critical-minerals exploration platform for Africa, modelled on KoBold's TerraShed — with geological-rulebook scoring, an 'Induna' geologist agent, copper prospectivity mapping achieving a **0.903 ROC-AUC** over a 12,100-cell prediction grid, and Morupule Predictive Intelligence for coal mine equipment scenario advisory (browser-based Transformers.js).
 
@@ -706,7 +707,7 @@ I have a **~26,000-word PhD proposal** through supervisor review, an **arXiv pre
 1. How do you quantify Return on Resilience (ROR) — what are the measurement inputs and agent interactions?
 2. How does the AI-SRF's nine-agent architecture differ from standard multi-agent orchestration frameworks?`;
         } else if (lowercaseText.includes('multichoice') || lowercaseText.includes('explora') || lowercaseText.includes('fsu') || lowercaseText.includes('telemetry') || lowercaseText.includes('decoder') || lowercaseText.includes('canal')) {
-          simulatedReply = `At **MultiChoice Group (a Canal+ company)**, I serve as Acting Principal Engineer & Lead for Data Platforms & Engineering — responsible for AI strategy and production ML across Africa's largest entertainment platform — **20M+ subscribers across 50 countries**. I was selected for the **Executive Head Training Program** in April 2024.
+          simulatedReply = `At **MultiChoice Group (a Canal+ company)**, I serve as Acting Principal Engineer & Lead for Data Platforms & Engineering — responsible for AI strategy and production ML across Africa's largest entertainment platform — **~20M subscribers across 46 markets**. I was selected for the **Executive Head Training Program** in April 2024.
 
 One of the most demanding challenges I've faced was the **Explora 3B reboot loop crisis** — ~80% of 98 monitored smartcards were rebooting multiple times daily. I analysed **~72,000 lines of raw Irdeto IMW debug logs** and a 674-row telemetry export, isolating three reinforcing layers: (1) **Si2183 tuner BER spikes ~735K (~1,800x the median)**; (2) OTA scheduler computing against the **1970 Unix epoch before NTP sync**; (3) a synchronised 58%→80% fleet spike pointing to an upstream OTA/CAS trigger. I delivered a **6-item P1/P2-prioritised remediation plan** for Broadcast, Middleware, Field and CAS teams.
 
@@ -724,11 +725,11 @@ On the AI side, I deployed a production **GenAI ensemble (Gemini 2.5 Flash + Qwe
         } else {
           simulatedReply = `I'm Bright C. Sikazwe — AI and Data Analytics Leader in AI Enablement, currently Acting Principal Engineer & Lead for Data Platforms & Engineering at MultiChoice Group (a Canal+ company), and PhD Candidate at the University of Johannesburg.
 
-I have **13+ years** translating complex data into strategic assets across media, telecommunications, healthcare, agriculture, mining and financial services. My work spans the full AI value chain: from enterprise AI strategy, use-case prioritisation and C-suite buy-in, through to production GenAI/LLM deployment, telemetry forensics, responsible AI governance, and measurable value delivery.
+I have **17 years** translating complex data into strategic assets across media, telecommunications, healthcare, agriculture, mining and financial services. My work spans the full AI value chain: from enterprise AI strategy, use-case prioritisation and C-suite buy-in, through to production GenAI/LLM deployment, telemetry forensics, responsible AI governance, and measurable value delivery.
 
 I was **selected for the MultiChoice Executive Head Training Program** in April 2024. I'm equally credible presenting to the Group CTO and resolving P1 production incidents in raw device logs.
 
-I have **15 live and prototype AI systems** deployed on cloud infrastructure — including the Kavango mineral intelligence platform, AfriCare (pan-African health AI across 15 nations), abfAgri (SADC agricultural intelligence), SentimentCommand (Zambia 2026 election intelligence), and MOSAIC (Enterprise Architecture decision board). You can explore them all in the portfolio panel.
+I have **${cvData.projects.length} live and prototype AI systems** deployed on cloud infrastructure — including the Kavango mineral intelligence platform, AfriCare (pan-African health AI across 15 nations), abfAgri (SADC agricultural intelligence), SentimentCommand (Zambia 2026 election intelligence), and MOSAIC (Enterprise Architecture decision board). You can explore them all in the portfolio panel.
 
 What would you like to explore?
 
@@ -903,7 +904,7 @@ What would you like to explore?
     if (score < 50) score = 55;
     
     let justification = `### Theme 1: Strategic AI Leadership & Enterprise Data Platform
-With 13+ years at MultiChoice Group — Africa's largest entertainment platform (20M+ subscribers, 50 countries) — I operate as Acting Principal Engineer & Lead, Data Platforms & Engineering, selected for the Executive Head Training Program in April 2024.
+With 11 years at MultiChoice Group (a ~20M-subscriber business across 46 markets) and 17 years in data overall — I operate as Acting Principal Engineer & Lead, Data Platforms & Engineering, selected for the Executive Head Training Program in April 2024.
 
 * **Situation**: MultiChoice Group needed to transform from reactive analytics into a proactive AI-first enterprise, amid SADC infrastructural challenges and the complexity of the MultiChoice–Canal+ integration.
 * **Task**: As AI and Data Analytics Leader in AI Enablement, my task was to own enterprise AI strategy, production ML deployment, data platform architecture, and executive alignment — end to end.
@@ -924,7 +925,7 @@ With 13+ years at MultiChoice Group — Africa's largest entertainment platform 
 
     if (lowercase.includes('momentum') || lowercase.includes('financial') || lowercase.includes('insurance') || lowercase.includes('bank')) {
       justification = `### Theme 1: Digital Strategy & AI-First Financial Services
-With 13+ years spanning enterprise AI strategy, C-suite analytics, and production data platform architecture at MultiChoice Group, I bring a proven track record of translating complex data into boardroom-level strategic value.
+With 17 years spanning enterprise AI strategy, C-suite analytics, and production data platform architecture at MultiChoice Group, I bring a proven track record of translating complex data into boardroom-level strategic value.
 
 * **Situation**: Financial services require a leader who can bridge AI engineering execution with digital business strategy, regulatory compliance (POPIA), and customer-centric insight delivery.
 * **Task**: Formulate and deliver an AI-first digital strategy integrating diverse customer data touchpoints, with strict information-security risk governance and measurable business outcomes.
@@ -984,6 +985,10 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
           </div>
           
           <div className="header-cta">
+            <a href={cvData.consulting.cta.mailto} className="btn btn-primary">
+              <Send size={16} />
+              Hire Me
+            </a>
             <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
               <LinkedinIcon size={16} />
               LinkedIn
@@ -1430,7 +1435,7 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
             
             {/* Filter bar */}
             <div className="filters-bar">
-              {(['All', 'Agriculture & Health', 'Mining & Resources', 'Telco & IoT', 'Strategy & Politics'] as const).map(filter => (
+              {(['All', 'Agriculture & Health', 'Mining & Resources', 'Telco & IoT', 'Fintech', 'Strategy & Politics'] as const).map(filter => (
                 <button
                   key={filter}
                   onClick={() => setPortfolioFilter(filter)}
@@ -1497,7 +1502,13 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
             >
               Summary
             </button>
-            <button 
+            <button
+              onClick={() => setActiveTab('consulting')}
+              className={`cv-tab-btn ${activeTab === 'consulting' ? 'active' : ''}`}
+            >
+              Work With Me
+            </button>
+            <button
               onClick={() => setActiveTab('job-matcher')}
               className={`cv-tab-btn job-matcher-tab-btn ${activeTab === 'job-matcher' ? 'active' : ''}`}
             >
@@ -1566,6 +1577,52 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                     {renderMarkdown('Active doctoral researcher in emerging markets AI strategic framework adaptations. Developing quantitative structures to evaluate enterprise **Return on Resilience (ROR)** over a 9-agent AI simulation stack.')}
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* CONSULTING OFFER */}
+            {activeTab === 'consulting' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', width: '100%', boxSizing: 'border-box' }}>
+                <h4 style={{ fontSize: '1.1rem', wordBreak: 'break-word' }}>{cvData.consulting.practice}</h4>
+                <p style={{ color: 'var(--text-primary)', lineHeight: '1.5', fontSize: '0.9rem', fontWeight: 600, wordBreak: 'break-word' }}>
+                  {cvData.consulting.headline}
+                </p>
+                <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '0.85rem', wordBreak: 'break-word' }}>
+                  {cvData.consulting.pitch}
+                </p>
+                <a href={cvData.consulting.cta.mailto} className="btn btn-primary" style={{ alignSelf: 'flex-start' }}>
+                  <Send size={14} />
+                  {cvData.consulting.cta.label}
+                </a>
+
+                <h4 style={{ fontSize: '0.95rem', marginTop: '0.5rem' }}>Services</h4>
+                {cvData.consulting.services.map((svc, index) => (
+                  <div key={index} className="glass-panel competency-card" style={{ padding: '0.75rem' }}>
+                    <h4 style={{ fontSize: '0.85rem', marginBottom: '0.3rem' }}>{svc.name}</h4>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.4', marginBottom: '0.3rem' }}>
+                      <strong>Outcome:</strong> {svc.outcome}
+                    </p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+                      {svc.deliverables}
+                    </p>
+                  </div>
+                ))}
+
+                <h4 style={{ fontSize: '0.95rem', marginTop: '0.5rem' }}>Case Studies</h4>
+                {cvData.consulting.caseStudies.map((cs, index) => (
+                  <div key={index} style={{ padding: '0.75rem', borderLeft: '3px solid var(--color-strategy)', background: 'rgba(var(--color-strategy-rgb), 0.04)', width: '100%', boxSizing: 'border-box' }}>
+                    <h4 style={{ fontSize: '0.85rem', color: 'var(--color-strategy)', marginBottom: '0.3rem', wordBreak: 'break-word' }}>{cs.client}</h4>
+                    <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: '1.4', marginBottom: '0.3rem' }}>{cs.context}</p>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.45' }}>{cs.result}</p>
+                  </div>
+                ))}
+
+                <h4 style={{ fontSize: '0.95rem', marginTop: '0.5rem' }}>How We Can Work Together</h4>
+                <ul className="timeline-bullets" style={{ gap: '0.25rem', paddingLeft: '0.75rem' }}>
+                  {cvData.consulting.engagementModels.map((model, index) => (
+                    <li key={index} style={{ fontSize: '0.8rem', lineHeight: '1.4' }}>{model}</li>
+                  ))}
+                </ul>
               </div>
             )}
 

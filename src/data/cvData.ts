@@ -31,6 +31,16 @@ export interface LinkedInPost {
   url: string;
 }
 
+export interface ConsultingOffer {
+  practice: string;
+  headline: string;
+  pitch: string;
+  services: { name: string; outcome: string; deliverables: string }[];
+  caseStudies: { client: string; context: string; result: string }[];
+  engagementModels: string[];
+  cta: { label: string; mailto: string };
+}
+
 export interface CVData {
   personalInfo: {
     name: string;
@@ -38,12 +48,12 @@ export interface CVData {
     subtitle: string;
     location: string;
     email: string;
-    emailWork: string;
-    phone: string;
     linkedin: string;
     github: string;
+    credly: string;
     summary: string;
   };
+  consulting: ConsultingOffer;
   competencies: string[];
   projects: Project[];
   experience: WorkExperience[];
@@ -65,22 +75,70 @@ export interface CVData {
 export const cvData: CVData = {
   personalInfo: {
     name: "Bright C. Sikazwe",
-    title: "AI Strategist  •  Data Platforms & Engineering Leader  •  Enterprise Architecture",
-    subtitle: "AI Strategist  •  Data Platforms & Engineering Leader  •  Enterprise Architecture",
-    location: "Jackal Creek Estate, Honeydew, Johannesburg 2109, South Africa",
+    title: "Executive AI, Data & Digital Leader  •  Enterprise Strategy  •  Responsible AI Governance  •  Value Realisation",
+    subtitle: "Founder & Principal, brytesika-AI  •  Acting Principal Engineer, MultiChoice Group (a Canal+ company)",
+    location: "Johannesburg, South Africa",
     email: "Bryte.sika@gmail.com",
-    emailWork: "Bright.Sikazwe@canal-plus.com",
-    phone: "+27 76 725 4353",
     linkedin: "https://www.linkedin.com/in/brytesika/",
     github: "https://github.com/brytesika-AI",
-    summary: "Visionary AI Strategist and Data Platforms Engineering Leader with 13+ years translating complex data into strategic assets that drive business transformation across the media and technology sectors. Currently Acting Principal Engineer and Lead for Data Platforms & Engineering at MultiChoice Group (a Canal+ company) — Africa’s largest entertainment platform (20M+ subscribers across 50 countries) — where I own AI strategy and production ML from use-case identification through deployment, governance and value tracking, while architecting the data platforms behind the MultiChoice–Canal+ integration. Selected for the MultiChoice Executive Head Training Program. Equally credible setting AI strategy in the boardroom, presenting to the Group CTO, and resolving P1 production incidents in raw device logs. PhD candidate at the University of Johannesburg researching the AI-Augmented Strategic Reasoning Framework (AI-SRF) — agentic AI for strategic resilience in emerging markets — with a published preprint and a journal article under preparation. Sessional consultant at Wits Business School."
+    credly: "https://www.credly.com/users/bright-sikazwe",
+    summary: "AI, data and digital leader with seventeen years turning enterprise data into measurable business value — eleven at MultiChoice Group (a Canal+ company), progressing through four roles to Acting Principal, leading the data and AI capability for a ~20-million-subscriber business across 46 markets. I translate business priorities into scalable capability: enterprise data and AI architecture, platform standards and governance, production AI delivering quantified outcomes, and the responsible-AI discipline that makes autonomous decisioning trustworthy. Founder & Principal of brytesika-AI, an independent applied-AI practice — most recently rebuilding a UK subscription business's analytics platform into a trusted single source of truth in one month. Doctoral researcher (University of Johannesburg) in ethical and responsible AI for strategic decision-making. Certified across Google Cloud, Azure, and the agent-engineering and Responsible AI stacks; three years of regulated banking."
+  },
+  consulting: {
+    practice: "brytesika-AI — independent applied-AI & data practice",
+    headline: "From person-dependent reporting to a trusted, automated, AI-ready data platform — in weeks, not quarters.",
+    pitch: "I work with founders, CEOs and data leaders who need numbers they can trust and AI that pays for itself. I bring enterprise-scale experience (a ~20M-subscriber, 46-market business) to focused, fixed-scope engagements: I architect the platform, ship the board, and leave behind tested, company-owned assets and a governance standard your team can run without me.",
+    services: [
+      {
+        name: "Analytics Platform Rescue & Single Source of Truth",
+        outcome: "Numbers leadership trusts — reconciled to source, refreshed automatically, owned by the company.",
+        deliverables: "Warehouse rebuild (BigQuery / Azure / Databricks), automated data-quality tests, company-owned service accounts, data-validity register with sign-off."
+      },
+      {
+        name: "Growth & Marketing Analytics",
+        outcome: "Truthful CAC, ROAS, LTV and attribution so spend decisions are made on real numbers.",
+        deliverables: "Direct ad-platform pipelines (e.g. Meta Marketing API), GA4 fixes, cohort LTV and payback models, a daily Growth Board with risk register and budget step-up model."
+      },
+      {
+        name: "AI Strategy & Responsible-AI Governance",
+        outcome: "An AI roadmap tied to measurable value, with governance that makes autonomous decisioning safe to scale.",
+        deliverables: "Use-case prioritisation, investment roadmap with success measures and pre-mortems, Build→Secure→Evaluate→Ship lifecycle, POPIA/PII controls."
+      },
+      {
+        name: "Production AI & Agentic Automation",
+        outcome: "AI that leaves the pilot stage and runs in operations.",
+        deliverables: "Multi-agent classification and triage pipelines, LLM/RAG assistants, evaluation harnesses, human-in-the-loop guardrails (read-only default, dry-run first, human approval)."
+      }
+    ],
+    caseStudies: [
+      {
+        client: "Raffle House (UK subscription business — £23.4m revenue, 1.35m orders, 81k subscriptions)",
+        context: "Manual, person-dependent reporting; a planned paid connector; GA4 double-counting purchases; marketing spend judged on untrustworthy CAC/ROAS.",
+        result: "In one month: rebuilt the analytics platform on BigQuery, validated nightly by 23 automated data-quality tests matching source to the penny; replaced a planned paid tool with a direct Meta Marketing API pipeline reconciled within 5p a day; fixed GA4 purchase double-counting (11.8× inflated → within 1%); lifted attributable revenue from under 1% to ~36%; made CAC/ROAS VAT-correct (~20% truer); shipped a daily company-wide Growth Board and a 15-initiative growth roadmap — showing cost per new customer falling ~£47 → £28 year on year on ~45% less paid spend."
+      },
+      {
+        client: "MultiChoice Group (a Canal+ company) — enterprise scale",
+        context: "A 46-market, ~20M-subscriber business running a 14-million-device transformation programme.",
+        result: "Executive analytics platform (Azure Data Lake → Fabric → Power BI, Databricks) used by senior VP leadership as the single source of truth; Secure Core analytics cut a critical device-integrity exposure from 52% to under 1% of fleet; a validated 489,425-smartcard AI segmentation adopted cross-border with Canal+."
+      }
+    ],
+    engagementModels: [
+      "Diagnostic sprint (2 weeks) — data & AI health check, risk register and prioritised roadmap.",
+      "Fixed-scope build (4–6 weeks) — platform rebuild, Growth Board or production AI pipeline, handed over tested and documented.",
+      "Fractional data & AI leadership — ongoing advisory retainer for founders and executive teams.",
+      "Remote-first, working with clients in South Africa, the UK and across Africa."
+    ],
+    cta: {
+      label: "Book a discovery call",
+      mailto: "mailto:Bryte.sika@gmail.com?subject=Consulting%20enquiry%20via%20AI%20Digital%20Twin"
+    }
   },
   competencies: [
-    "AI & Machine Learning — production GenAI/LLM deployment (Gemini, Qwen, Llama3, GPT-4 Vision), multi-agent systems, multimodal video AI, NLP/sentiment analysis, churn intelligence, anomaly detection (SageMaker), MLOps & drift detection, responsible-AI governance, AI-SRF framework.",
-    "Executive Analytics & BI — C-suite and Group CTO reporting, KPI governance & data contracts, Power BI semantic models, DAX, MECE decision frameworks, VOC/CSAT/NPS analytics, cohort analysis, defensible data storytelling.",
-    "Data Platform Architecture — Databricks, Azure (Synapse, Fabric, Blob, ML, Data Factory), PySpark, Apache Arrow, AWS (Kinesis, S3, SageMaker, Redshift), GCP, Cloudflare, medallion/lakehouse, real-time pipelines, ETL/ELT.",
-    "Telemetry & Forensic Engineering — large-scale parallel log mining, fleet diagnostics across 4.5M+ devices, root-cause analysis under incident pressure, firmware risk governance.",
-    "Strategic Leadership — enterprise AI roadmaps, technical-debt transformation, data governance & compliance, communities of practice, capability building, executive advisory, change management, emerging-market digitalisation."
+    "Enterprise AI, Data & Digital Strategy — define and execute data/AI strategy tied to business priorities; strategic roadmaps and investment prioritisation; drive AI adoption from concept through scaling to value realisation across a 46-market enterprise.",
+    "Business Value Realisation — AI and analytics delivering measurable outcomes (a 52%→<1% risk reduction, segmentation driving marketing addressability across ~5.5M customers, VAT-correct CAC/ROAS reshaping spend decisions); value tracking and benefits reporting built in.",
+    "Capability Enablement & Industrialisation — define data/AI architecture, platform standards, governance and lifecycle management; secure, reliable, cost-effective solutions (pennies-a-day builds, 97%+ query-cost reductions).",
+    "AI & Data Governance (ethics, risk, privacy) — authored an enterprise responsible-AI standard (Build→Secure→Evaluate→Ship); data-quality registers with sign-off; PII protection, least-privilege IAM; doctoral specialism in ethical and responsible AI.",
+    "Workforce Enablement & Stakeholder Partnership — build data/AI literacy and standards consumed by teams of engineers; mentor analysts and engineers; partner directly with CEOs, senior VPs and business leaders on commercial value."
   ],
   projects: [
     {
@@ -88,25 +146,52 @@ export const cvData: CVData = {
       title: "StrategyLab AI | McKinsey-Grade Business Strategy Decision Engine",
       description: "McKinsey-grade business strategy decision engine providing analytical frameworks, structured MECE problem-solving, and automated strategic validation of business initiatives using agentic LLM workflows.",
       liveUrl: "https://strategylab-ai.bryte-sika.workers.dev/",
-      github: "https://github.com/brytesika-AI/strategylab-ai",
+      github: "https://github.com/brytesika-AI/AI-Strategy-tools",
       sector: "Strategy & Politics",
       techStack: ["Cloudflare Workers", "React", "AI Decision Engine", "McKinsey Frameworks", "MECE"]
     },
     {
-      id: "football-fan-segmentation",
-      title: "Canal+ Football Fan Segmentation",
-      description: "Designed and delivered a full-base football fan segmentation model across 7.81M South African subscribers for Canal+. Engineered the Football Affinity Score (FAS) weighted composite index calibrated against ~392K connected-decoder truth set.",
+      id: "merchant-gameboard",
+      title: "Merchant Gameboard | Informal-Merchant Health Intelligence",
+      description: "Live, explainable view of informal-merchant health built from payment-terminal signals, modelled on a South African fintech environment (100k+ terminals, ~3M daily transactions across spaza shops in Soweto, Khayelitsha, Umlazi, Tembisa and Mitchells Plain). Gemini 2.5 Flash explainability chips (source · reasoning · confidence + recommended action), zero-shot merchant-pattern classification, and World Bank macro indicators — on synthetic PaySim data with SASSA grant surges and load-shedding dips.",
+      liveUrl: "https://merchant-gameboard.pages.dev",
+      github: "https://github.com/brytesika-AI/Merchant-Gameboard",
+      sector: "Fintech",
+      techStack: ["Cloudflare Pages Functions", "Hono", "Gemini 2.5 Flash", "Hugging Face Zero-Shot", "World Bank API", "PaySim Synthetic Data"]
+    },
+    {
+      id: "brytesika-fintech",
+      title: "BryteSika Fintech Platform",
+      description: "AI-driven financial-services ecosystem consolidating three platforms: an Autonomous Field Ops engine (agent routing, geotagged offline collection, agent wallets), a Proactive Credit Co-Pilot (real-time credit-risk scoring, dynamic limits, automated recovery alerts), and a Zero-Touch onboarding engine (KYC/AML, document OCR, fraud screening, instant account provisioning).",
+      liveUrl: "#",
+      github: "https://github.com/brytesika-AI/Fintech",
+      sector: "Fintech",
+      techStack: ["Python", "FastAPI", "Node.js", "scikit-learn", "Redis", "PostgreSQL"]
+    },
+    {
+      id: "agroresilience-africa",
+      title: "AgroResilience Africa | Continental Crop Monitoring & AI Forecasting",
+      description: "Edge-computed geospatial platform tracking crop health and forecasting yields across Africa using Digital Earth Africa's Open Data Cube (STAC API). Computes Sentinel-2 Enhanced Vegetation Index (EVI) with SCL cloud masking directly in Cloudflare Workers, with Workers AI yield narratives — grounded in Zambia's Mkushi Farm Block, Southern Province drought early-warning and SUA Tanzania field validation.",
+      liveUrl: "https://agro-resilience-africa.pages.dev",
+      github: "https://github.com/brytesika-AI/AgroResilience-Africa---Continental-Crop-Monitoring-AI-Forecasting-System",
+      sector: "Agriculture & Health",
+      techStack: ["Cloudflare Workers AI", "Digital Earth Africa STAC", "Sentinel-2 EVI", "React", "Leaflet", "Cloudflare KV"]
+    },
+    {
+      id: "fan-segmentation",
+      title: "Canal+ Smartcard Fan Segmentation",
+      description: "Classified 489,425 connected smartcards from decoder telemetry into four validated activation cohorts (298,772 activatable), surviving three independent validation tests and adopted cross-border with Canal+; extended by proxy modelling to the ~5.5M unconnected base — commercial AI driving marketing addressability at scale.",
       liveUrl: "#",
       github: "#",
-      sector: "Strategy & Politics",
-      techStack: ["Databricks SQL", "Python", "Power BI", "FAS Model", "Nielsen/BRC Reconciliation"]
+      sector: "Telco & IoT",
+      techStack: ["Databricks SQL", "Python", "Power BI", "Decoder Telemetry", "Proxy Modelling"]
     },
     {
       id: "chicken-iq",
       title: "ChickenIQ Poultry App",
       description: "Vibrant, design-first poultry disease diagnosis and yield prediction app. Fully local-storage persisted, features multi-language support (English, Bemba, Nyanja) and interactive diagnosis questions.",
       liveUrl: "https://chicken-iq.pages.dev",
-      github: "https://github.com/brytesika-AI/ChickenIQ",
+      github: "#",
       sector: "Agriculture & Health",
       techStack: ["React", "Vite", "Tailwind CSS", "Local Storage", "Internationalization"]
     },
@@ -293,68 +378,66 @@ export const cvData: CVData = {
   ],
   experience: [
     {
-      role: "Acting Principal Engineer — Data Analytics & Lead, Data Platforms & Engineering",
+      role: "Founder & Principal — Independent Data & AI Consultant",
+      company: "brytesika-AI (independent applied-AI practice)",
+      location: "Johannesburg, South Africa (remote, UK & Africa clients)",
+      date: "2025 – Present",
+      bullets: [
+        "**[CONSULTING — RAFFLE HOUSE, UK]** Stood up a trusted enterprise data capability in one month for a UK subscription business (£23.4m revenue, 1.35m orders, 81k subscriptions): rebuilt the analytics platform as a BigQuery star-schema warehouse validated nightly by 23 automated data-quality tests matching source to the penny; removed single-person dependency via a company-owned service account.",
+        "**[CONSULTING — RAFFLE HOUSE, UK]** Replaced a planned paid tool with a direct Meta Marketing API pipeline (Secret Manager, idempotent loads, reconciled within 5p a day); fixed GA4 purchase double-counting (11.8× inflated → within 1% of real checkouts); lifted attributable revenue from under 1% to ~36%; made CAC/ROAS VAT-correct (~20% truer).",
+        "**[CONSULTING — RAFFLE HOUSE, UK]** Shipped a company-wide Growth Board refreshed daily — with a risk register and budget step-up model — and a 15-initiative growth roadmap with success measures, pre-mortems and review triggers; showed cost per new customer falling ~£47 → £28 year on year on ~45% less paid spend.",
+        "**[APPLIED-AI PORTFOLIO]** Founder of a multi-vertical applied-AI portfolio (agriculture, health, minerals, fintech, enterprise) governed by a published responsible-AI standard (Build→Secure→Evaluate→Ship); 20+ public repositories at github.com/brytesika-AI."
+      ]
+    },
+    {
+      role: "Acting Principal Engineer & Lead, Data Platforms & Engineering",
       company: "MultiChoice Group (a Canal+ Company)",
       location: "Johannesburg, South Africa",
-      date: "Feb 2024 – Present",
+      date: "2025 – Present",
       bullets: [
-        "Selected for the **MultiChoice Executive Head Training Program** (April 2024). Own enterprise AI strategy and production ML across telecommunications, content delivery, and customer operations.",
-        "**[SIGNATURE ACHIEVEMENT]** Designed and delivered a full-base football fan segmentation model across 7.81M South African subscribers for Canal+. Engineered the Football Affinity Score (FAS) composite index from 4 signals (package tier, geography, device class, subscription event bonus) calibrated against a ~392K connected-decoder truth set (AUC >=0.75) and reconciled to Nielsen Sports SA / BRC TAMS panels.",
+        "Lead the enterprise data and AI capability for a ~20M-subscriber business across 46 markets — strategy, architecture, platform standards, governance, and the industrialisation of AI across markets; formal team lead with matrixed leadership across engineering, analytics, security and marketing; daily executive engagement with senior VP leadership on value and investment.",
+        "**[EXECUTIVE ANALYTICS]** Designed and operate the executive analytics platform (Azure Data Lake → Fabric → Power BI, Databricks) steering a 14-million-device transformation programme across 46 markets — the daily insight update is the single source of truth senior VP leadership uses to steer remediation.",
+        "**[PRODUCTION AI]** Designed and operate a five-agent classification pipeline that triages priority incidents automatically, governed under a written lifecycle; plus a 12-category MECE AI taxonomy that isolated a contact-centre surge's root cause across 94,490 contacts (89.8% resolved to account level).",
+        "**[GOVERNANCE]** Authored the Build→Secure→Evaluate→Ship responsible-AI standard applied across all AI and data work; ran a portfolio-wide audit surfacing and remediating four critical findings.",
+        "Selected for the **MultiChoice Executive Head Training Program** (April 2024).",
         "**[ARTIFICIAL INTELLIGENCE]** Architected and deployed a production GenAI ensemble (Gemini 2.5 Flash + Qwen2.5-7B) processing 10K+ daily call-centre interactions aligned to the Customer, Hardware, Account, Programming (CHAP) framework, achieving a ~92% error reduction.",
         "**[ARTIFICIAL INTELLIGENCE]** Built a real-time AI churn-intelligence pipeline on Databricks converting voice logs into Churn Risk and CSAT metrics, enabling proactive churn intervention and revenue protection.",
-        "**[ARTIFICIAL INTELLIGENCE]** Engineered a multimodal AI video-analytics pipeline (Gemini 2.5 Flash, base64 payload, AzureML, JSON-schema guards, Azure Blob) automating advert detection for the Addressable TV field trial.",
-        "**[ARTIFICIAL INTELLIGENCE]** Enhanced DStv Shorts user experience through a GPT-4 Vision-powered automated video quality classification and verification pipeline.",
-        "**[ARTIFICIAL INTELLIGENCE]** Delivered LLM call-classification systems for payment intelligence (Gemini 2.5 Flash batched structured JSON) and technical triage (Qwen2.5-7B via HuggingFace InferenceClient and Groq).",
+        "**[ARTIFICIAL INTELLIGENCE]** Engineered a multimodal AI video-analytics pipeline (Gemini 2.5 Flash, AzureML, JSON-schema guards, Azure Blob) automating advert detection for the Addressable TV field trial.",
         "**[ARTIFICIAL INTELLIGENCE]** Deployed a local 5-agent call classifier on Llama3.1 via Ollama, processing 106,761 call records end-to-end to establish a privacy-preserving, on-prem classification capability.",
-        "**[ARTIFICIAL INTELLIGENCE]** Implemented AI-powered predictive maintenance and anomaly detection for set-top boxes (Python, AWS SageMaker) and piloted AI agents to analyze STB logs for early fault identification.",
-        "**[ARTIFICIAL INTELLIGENCE]** Prototyped an autonomous agentic AI ecosystem for enterprise workflows (LangChain, CrewAI, OpenClaw) to resolve integration challenges in African digital-transformation contexts.",
-        "**[EXECUTIVE ANALYTICS & BI]** Reframed DStv Stream as a ~9x growth opportunity by programmatically engineering a 13-slide executive report from ~12.89M active devices, correcting a material 17x -> ~9x data error and elevating the app to a flagged growth priority.",
-        "**[EXECUTIVE ANALYTICS & BI]** Delivered weekly product-performance reporting to the Group CTO and C-suite using Power BI dashboards covering product activations, Box Office rentals, and feature utilization.",
-        "**[EXECUTIVE ANALYTICS & BI]** Provided strategic data and connected-decoder usage analysis (~28% penetration, ~123K users) to support SuperSport App platform changes and API transition decisions.",
+        "**[EXECUTIVE ANALYTICS & BI]** Reframed DStv Stream as a ~9x growth opportunity by programmatically engineering a 13-slide executive report from ~12.89M active devices, correcting a material 17x -> ~9x data error.",
         "**[EXECUTIVE ANALYTICS & BI]** Led strategic technical-debt transformation: quantified 2,400+ issues (58% unresolved >1 year, ~700 launch-critical), developing Power BI backlog categorisation dashboards and securing executive sponsorship.",
-        "**[EXECUTIVE ANALYTICS & BI]** Established enterprise KPI definitions and data-contract governance (T+1 SLAs, >=99% completeness checks) for cross-platform reporting across CII/Databricks and Amplitude.",
-        "**[EXECUTIVE ANALYTICS & BI]** Built a real-time PMO synergy dashboard for the MultiChoice-Canal+ integration using dynamic Power BI semantic models and stakeholder-input simulations.",
-        "**[EXECUTIVE ANALYTICS & BI]** Produced MECE executive analyses (scenario/sensitivity, CSat/NPS, site-downtime analytics) informing high-stakes platform and DTT network investment decisions.",
-        "**[EXECUTIVE ANALYTICS & BI]** Authored an enterprise analytics-maturity roadmap (descriptive -> diagnostic -> predictive -> prescriptive) with reliability KPIs and a phased 12-month+ plan.",
+        "**[EXECUTIVE ANALYTICS & BI]** Established enterprise KPI definitions and data-contract governance (T+1 SLAs, >=99% completeness checks) for cross-platform reporting across Databricks and Amplitude, and built a real-time PMO synergy dashboard for the MultiChoice–Canal+ integration."
+      ]
+    },
+    {
+      role: "Senior Engineer: Infield Insights (Engineering Analytical)",
+      company: "MultiChoice Group (a Canal+ Company)",
+      location: "Johannesburg, South Africa",
+      date: "2019 – 2025",
+      bullets: [
+        "Built and owned the subscriber-telemetry, secure-core, and entitlement analytics estate.",
+        "**[AI SEGMENTATION]** Classified 489,425 connected smartcards from decoder telemetry into four validated activation cohorts (298,772 activatable), surviving three independent validation tests and adopted cross-border with Canal+; extended by proxy modelling to the ~5.5M unconnected base.",
+        "**[RISK REDUCTION]** Led Secure Core integrity analytics cutting a critical device-integrity exposure from 52% to under 1% of fleet; forensic analytics isolated a fault affecting ~1.6M devices and guided a fix that resolved ~1.4M.",
         "**[TELEMETRY & DATA ENGINEERING]** Governed the safe shipment of 4.5M devices, enabling ~R710M in projected cost savings by building real-time log-ingestion and exception-monitoring pipelines that detected kernel failures across 27M+ endpoints, enforcing a 'No-Go' on Firmware Build B15.2.",
-        "**[TELEMETRY & DATA ENGINEERING]** Built a multi-terabyte parallel telemetry pipeline (ProcessPoolExecutor 32 workers + ThreadPoolExecutor 50 threads) to parse Azure Blob logs and surface ~50% decoder failure rates fleet-wide.",
-        "**[TELEMETRY & DATA ENGINEERING]** Engineered a distributed PySpark log-intelligence platform (pandas UDFs, Apache Arrow vectorisation (WASBS), pre-compiled regex bank) to extract exception stack traces.",
+        "**[TELEMETRY & DATA ENGINEERING]** Built a multi-terabyte parallel telemetry pipeline (ProcessPoolExecutor 32 workers + ThreadPoolExecutor 50 threads) to parse Azure Blob logs and surface ~50% decoder failure rates fleet-wide; engineered a distributed PySpark log-intelligence platform (pandas UDFs, Apache Arrow vectorisation).",
         "**[TELEMETRY & DATA ENGINEERING]** Authored a fleet-wide forensic RCA for the Explora 3B reboot crisis (~80% reboot loop): parsed ~72K lines of raw Irdeto IMW logs, isolated tuner BER spikes and OTA scheduler Unix epoch bugs, and delivered a 6-item prioritized remediation plan.",
-        "**[TELEMETRY & DATA ENGINEERING]** Contributed to a P1 RCA on Explora Ultra reboot loop failures after a Secure Core FSU rollout, scoping mitigations across 24h / 72h / 2-3 week horizons.",
-        "**[TELEMETRY & DATA ENGINEERING]** Delivered zero-downtime data migration and platform integration across the MultiChoice-Canal+ transition, ensuring reporting integrity.",
-        "**[TELEMETRY & DATA ENGINEERING]** Optimised IoT costs via cloud-based data architecture and scalable infrastructure, reducing costs as the connected base scaled.",
-        "**[TELEMETRY & DATA ENGINEERING]** Expanded African market reach through 3G integration for non-internet decoders, enabling access to select online services.",
-        "**[AI STRATEGY, GOVERNANCE & LEADERSHIP]** Defined enterprise AI strategy, managed the AI demand pipeline, established an AI governance community of practice, POPIA compliance controls, and built cloud-native ML platforms."
-      ]
-    },
-    {
-      role: "Senior Engineer (Lead) — Data Analytics",
-      company: "MultiChoice Group Technology",
-      location: "Johannesburg, South Africa",
-      date: "Feb 2017 – Jan 2024",
-      bullets: [
         "**[COST OPTIMISATION]** Led IoT system refactoring and cloud cost optimisation, saving ~ZAR30M annually by implementing a data-archive lifecycle leveraging AWS S3 and Azure Data Lake Gen2 storage.",
-        "**[CLOUD MIGRATION]** Collaborated on the Showmax streaming-app migration from AWS infrastructure to NBCUniversal's Peacock platform, successfully delivering the app to all devices.",
-        "**[PERFORMANCE DASHBOARDS]** Designed and deployed cloud-based performance dashboards (Power BI, Azure Synapse, AWS Kinesis, Metrics Advisor, SageMaker Ground Truth) tracking IoT data, boosting CSat by 20% and reducing service calls by 15%.",
-        "**[REAL-TIME PIPELINES]** Architected real-time data pipelines (Azure Stream Analytics, AWS Kinesis) for proactive identification of potential issues (missing assets, E48s, E16s) and faster incident response.",
-        "**[ANOMALY DETECTION]** Implemented Azure Metrics Advisor for multivariate time-series anomaly detection, proactively identifying anomalies in real time.",
-        "**[CONVERSATIONAL AI]** Created an Engineers Support Bot using GPT-4 and OpenAI Studio, improving customer-service efficiency and reducing resolution times.",
-        "**[KNOWLEDGE MANAGEMENT]** Led rollout of knowledge-management systems incorporating Confluence and LLM integration, improving operational efficiency and knowledge sharing.",
-        "**[EXECUTIVE INTERFACE]** Acted as a pivotal link between Technology Executives and data teams, and developed decoder swaps monitoring reports for MAH Executives in Nigeria."
+        "**[PERFORMANCE DASHBOARDS]** Designed and deployed cloud-based performance dashboards (Power BI, Azure Synapse, AWS Kinesis, Metrics Advisor, SageMaker) tracking IoT data, boosting CSat by 20% and reducing service calls by 15%.",
+        "**[REAL-TIME PIPELINES]** Architected real-time data pipelines (Azure Stream Analytics, AWS Kinesis) and Azure Metrics Advisor anomaly detection for proactive identification of issues (missing assets, E48s, E16s).",
+        "**[CLOUD MIGRATION]** Collaborated on the Showmax streaming-app migration from AWS infrastructure to NBCUniversal's Peacock platform.",
+        "**[CONVERSATIONAL AI]** Created an Engineers Support Bot using GPT-4 and OpenAI Studio and led rollout of Confluence + LLM knowledge-management, reducing resolution times."
       ]
     },
     {
-      role: "Senior Customer Insights Lead / Senior Data Analyst Lead",
-      company: "MultiChoice Group Analytics",
+      role: "Senior Analytics Lead, Group Analytics (2015–2019) · Senior Data Analyst (2014–2015)",
+      company: "MultiChoice Group",
       location: "Johannesburg, South Africa",
-      date: "Jan 2014 – Jan 2017",
+      date: "Jan 2014 – 2019",
       bullets: [
-        "**[RETENTION STRATEGY]** Drove data-driven retention strategy: conducted cohort and behavioural analyses showing PVR customers had ~12.4% higher stickiness and on-demand services increased activity by ~6.4% for Premium subscribers.",
+        "Progressive analytics leadership from analyst to group analytics lead — group-wide subscriber, sales and marketing analytics; built the segmentation and reporting foundations the enterprise now runs on.",
+        "**[RETENTION STRATEGY]** Cohort and behavioural analyses showing PVR customers had ~12.4% higher stickiness and on-demand services increased activity by ~6.4% for Premium subscribers.",
         "**[PREDICTIVE MODELLING]** Pioneered churn-prediction models using SAS, RapidMiner, and Python, improving marketing effectiveness by 2% and reducing customer churn by 7%.",
-        "**[DATA AVAILABILITY]** Maintained 99.5% data availability for critical analytical systems by designing automated data-quality checks and streamlining ETL processes.",
-        "**[CROSS-BORDER ANALYTICS]** Built SSIS/Spark data pipelines and Power BI reports supporting strategic decision-making across 43 African countries.",
-        "**[DATA GOVERNANCE]** Implemented data governance frameworks using Data Vault, ensuring high data quality and consistency across Africa.",
-        "**[BUDGET & PEOPLE]** Managed departmental budgets for analytics tools and provided mentorship and capability building to junior analysts."
+        "**[CROSS-BORDER ANALYTICS]** Built SSIS/Spark data pipelines and Power BI reports supporting decision-making across African markets; maintained 99.5% data availability with automated data-quality checks; implemented Data Vault governance."
       ]
     },
     {
@@ -367,22 +450,39 @@ export const cvData: CVData = {
       ]
     },
     {
-      role: "BI Operations Team Lead",
-      company: "UTI (DSV)",
+      role: "BI Operations Lead",
+      company: "UTi Worldwide",
       location: "Johannesburg, South Africa",
-      date: "Jan 2012 – Dec 2013",
+      date: "2012 – 2014",
       bullets: [
-        "Led a global team to design, develop, and manage a Microsoft BI-based enterprise data warehouse and reporting suite, significantly improving BI efficiency and reliability.",
-        "Successfully piloted a Hadoop-based data warehouse, demonstrating strategic foresight in big-data technologies."
+        "Led a global team to design, develop, and manage a Microsoft BI-based enterprise data warehouse and reporting suite for logistics operations; piloted a Hadoop-based data warehouse."
+      ]
+    },
+    {
+      role: "BI Consultant",
+      company: "Standard Bank Group",
+      location: "Johannesburg, South Africa",
+      date: "2011 – 2012",
+      bullets: [
+        "ETL and reporting in regulated financial services."
+      ]
+    },
+    {
+      role: "Junior Lecturer",
+      company: "Monash University",
+      location: "South Africa",
+      date: "2009 – 2010",
+      bullets: [
+        "Teaching and research in computing and AI."
       ]
     }
   ],
   education: [
     {
-      degree: "PhD Candidate — Applied Artificial Intelligence",
+      degree: "PhD Candidate — Ethical & Responsible AI for Strategic Decision-Making",
       institution: "University of Johannesburg, College of Business & Economics",
       date: "2025 – Present",
-      details: "Designing AI-SRF — a novel agentic AI governance framework for strategic resilience in emerging markets. Specified 22 functional requirements with safety constraints and a layered Sensing/Reasoning/Alignment/Self-Learning architecture. Built a nine-agent system with African-archetype personas (The Tracker, The Induna, The Auditor) across five iterative stages (Sense & Frame, Analyse & Understand, Ideate & Innovate, Evaluate & Decide, Act & Learn). Defined Return on Resilience (ROR) metrics, Digital Gauntlet, Silicon Sampling and GEPA/DSPy self-learning loop. Working prototype (WIP); ~26,000-word PhD proposal through supervisor review, arXiv preprint published, and a Design-Science journal article prepared for a top-tier IS venue."
+      details: "Designing AI-SRF — an agentic AI governance framework for strategic resilience in emerging markets. Specified 22 functional requirements with safety constraints and a layered Sensing/Reasoning/Alignment/Self-Learning architecture. Built a nine-agent system with African-archetype personas (The Tracker, The Induna, The Auditor) across five iterative stages (Sense & Frame, Analyse & Understand, Ideate & Innovate, Evaluate & Decide, Act & Learn). Defined Return on Resilience (ROR) metrics, Digital Gauntlet, Silicon Sampling and GEPA/DSPy self-learning loop. ~26,000-word PhD proposal through supervisor review, arXiv preprint published, and a Design-Science journal article prepared for a top-tier IS venue."
     },
     {
       degree: "Master of Management, Digital Business (MMgt)",
@@ -391,8 +491,8 @@ export const cvData: CVData = {
       details: "Coursework: Digital Business Fundamentals, Strategy for a Digital Age, Applied Big Data Analytics, Digital Transformation & Change Management, Innovation & Entrepreneurship, Fintech, Digital Marketing, e-Government. Thesis: Quantified the relationship between digitalisation and GDP in Botswana via multivariate time-series and OLS regression (R² = 0.995) using Python and Power BI (ARIMA modelling, Granger causality, correlation analysis, regression techniques)."
     },
     {
-      degree: "Honours in Business Systems — Computer Science",
-      institution: "Monash University (Australia)",
+      degree: "BSc Honours, Computing",
+      institution: "Monash University",
       date: "2009",
       details: "Specialized in software engineering, distributed systems, and computer science foundations."
     },
@@ -405,82 +505,98 @@ export const cvData: CVData = {
   ],
   certifications: [
     {
-      category: "Microsoft Certifications",
+      category: "Cloud & Data (certified)",
       items: [
-        "Microsoft Certified Fabric Analytics Engineer (DP-600)",
+        "Google Cloud Professional Data Engineer (2026)",
         "Microsoft Certified Azure Data Engineer Associate (DP-203)",
-        "Microsoft Certified Data Analyst — Power BI (PL-300)",
-        "Microsoft Certified Azure Fundamentals (AZ-900)",
-        "Microsoft Certified BI Professional",
-        "Microsoft Certified SharePoint Professional",
-        "In progress: Azure Solutions Architect Expert; AWS Certified Solutions Architect Associate; AWS Certified Data Engineer"
+        "Microsoft Certified Fabric Analytics Engineer Associate (DP-600)",
+        "Microsoft Certified Power BI Data Analyst Associate (PL-300)",
+        "Oracle Cloud Infrastructure Generative AI Professional",
+        "Microsoft Certified Azure Fundamentals (AZ-900)"
       ]
     },
     {
-      category: "AI, Cloud & Data",
+      category: "AI, Agents & Responsible AI (certified)",
       items: [
-        "Oracle Cloud Infrastructure 2024 Generative AI Certified Professional",
-        "IBM Applied AI Engineer Professional Certificate",
-        "Data Engineering with Google Cloud Professionals Certificate",
-        "Google Certified Digital Marketing",
-        "Prompt Engineering for ChatGPT (LLM)"
+        "Google Cloud AI-agent path — Agent Development Kit (ADK), A2A protocol, Model Context Protocol (MCP), Agent Engine, multi-agent orchestration",
+        "Google Responsible AI series — Fairness & Bias; Interpretability & Transparency; Privacy & Safety",
+        "MLOps for Generative AI (Google Cloud)",
+        "Google Skills Diamond League — 28,700+ points, 45+ badges",
+        "IBM Applied AI Engineer Professional Certificate"
+      ]
+    },
+    {
+      category: "Anthropic (2026)",
+      items: [
+        "Claude with Google Cloud Vertex AI",
+        "Model Context Protocol — Advanced Topics",
+        "Building with the Claude API",
+        "Introduction to Agent Skills",
+        "AI Fluency: Framework & Foundations"
       ]
     },
     {
       category: "Product & Business Strategy",
       items: [
         "McKinsey Product Academy 2023 Alumni",
-        "Product Analytics Certification",
-        "Engineer AI Agents with Agent Development Kit (ADK) — Google Cloud (2026)",
-        "Create Your First Gemini Enterprise Application — Google Cloud (2026)",
-        "Build a Data Warehouse with BigQuery — Google Cloud (2026)"
+        "Product Analytics Certification"
+      ]
+    },
+    {
+      category: "In Progress",
+      items: [
+        "Google Cloud Professional Cloud Architect",
+        "AWS AI Business Strategist",
+        "AWS Data Engineer Associate",
+        "AWS Generative AI Developer Professional",
+        "Full transcripts: credly.com/users/bright-sikazwe"
       ]
     }
   ],
   technicalExpertise: [
     {
       category: "Languages & Query",
-      skills: ["Python (pandas, scikit-learn, NumPy, PyTorch)", "T-SQL", "JavaScript / TypeScript", "R", "Java", "LaTeX"]
+      skills: ["SQL (BigQuery, Databricks SQL, T-SQL)", "Python (pandas, scikit-learn, NumPy, PyTorch)", "JavaScript / TypeScript", "R", "LaTeX"]
     },
     {
       category: "Data & Cloud Platforms",
-      skills: ["Databricks", "Azure (Synapse, Fabric, Blob, ML, Data Factory, Metrics Advisor, Stream Analytics)", "PySpark", "Apache Arrow", "AWS (Kinesis, S3, SageMaker, Redshift)", "GCP (BigQuery, Dataflow)", "Cloudflare (Workers, D1, KV, Pages)", "SSIS", "Medallion/Lakehouse Architecture"]
+      skills: ["Google BigQuery", "Databricks / Spark", "Azure (Data Lake, Fabric, Synapse, ML, Data Factory, Stream Analytics)", "AWS (Kinesis, S3, SageMaker, Redshift)", "Cloudflare (Workers, D1, KV, Pages)", "Medallion/Lakehouse & Star-Schema Architecture"]
+    },
+    {
+      category: "Growth & Marketing Analytics",
+      skills: ["GA4", "Meta Marketing API", "Google Ads Connectors", "Cohort LTV", "CAC & Payback", "Survival / Churn Curves", "Attribution", "Scenario Modelling", "Reconciliation Testing"]
     },
     {
       category: "Generative AI & Agents",
-      skills: ["Gemini 2.5 Flash", "Qwen2.5-7B", "Llama3 (Ollama)", "GPT-4/4o Vision", "OpenAI Studio", "Groq", "HuggingFace InferenceClient", "LangChain", "CrewAI", "OpenClaw", "DSPy/GEPA", "Multi-Agent Architecture", "RAG Systems", "Multimodal Video AI"]
+      skills: ["Claude API", "Gemini 2.5 Flash", "Qwen2.5-7B", "Llama3 (Ollama)", "GPT-4/4o Vision", "Groq", "Model Context Protocol (MCP)", "A2A", "Google ADK", "LangChain", "CrewAI", "DSPy/GEPA", "Multi-Agent Architecture", "RAG Systems", "Multimodal Video AI"]
     },
     {
       category: "Analytics & BI",
-      skills: ["Power BI (DAX, Semantic Models)", "Tableau", "Amplitude (Segment)", "SAS", "RapidMiner", "pptxgenjs", "MECE Frameworks", "Dynamics 365 Customer Voice"]
+      skills: ["Power BI (DAX, Semantic Models)", "Executive Dashboards", "Tableau", "Amplitude", "SAS", "RapidMiner", "MECE Frameworks"]
     },
     {
       category: "ML & Data Science",
-      skills: ["scikit-learn", "PyTorch", "XGBoost", "Random Forest", "Forecasting (ARIMA)", "Anomaly Detection (SageMaker)", "Spatial ML (GeoPandas, Shapely)", "NLP Sentiment Analysis", "Churn Modelling", "Multivariate OLS Regression"]
+      skills: ["scikit-learn", "PyTorch", "XGBoost", "Random Forest", "Forecasting (ARIMA)", "Anomaly Detection", "Spatial ML (GeoPandas, Shapely)", "NLP Sentiment Analysis", "Churn Modelling", "Multivariate OLS Regression"]
     },
     {
       category: "Telemetry & Forensic Engineering",
-      skills: ["Parallel Log Mining (ProcessPoolExecutor, ThreadPoolExecutor)", "Irdeto IMW Log Forensics", "IoT Fleet Telemetry", "Firmware Risk Governance", "Azure Blob SDK", "Boot-sequence State Machine Analysis"]
+      skills: ["Parallel Log Mining (ProcessPoolExecutor, ThreadPoolExecutor)", "Irdeto IMW Log Forensics", "IoT Fleet Telemetry", "Firmware Risk Governance", "Azure Blob SDK"]
     },
     {
-      category: "Frontend & Geospatial",
-      skills: ["Next.js", "React", "Mapbox", "deck.gl", "GeoPandas", "FastAPI", "Streamlit"]
-    },
-    {
-      category: "Governance & Collaboration",
-      skills: ["Confluence", "Data Vault", "POPIA Compliance", "King IV", "B-BBEE", "Responsible AI Frameworks", "Data Contracts", "MLOps & Drift Detection"]
+      category: "Governance, Security & Collaboration",
+      skills: ["Responsible AI (Build→Secure→Evaluate→Ship)", "IAM & Least-Privilege", "Secret Manager", "PII Protection", "POPIA Compliance", "Data-Validity Registers", "Data Contracts", "MLOps & Drift Detection", "King IV"]
     }
   ],
   africanContext: [
-    "Acting Principal Engineer & Lead, Data Platforms & Engineering at MultiChoice Group (a Canal+ company) — Africa's largest entertainment platform spanning 50 countries and 20M+ subscribers. Selected for the MultiChoice Executive Head Training Program.",
-    "Fleet diagnostics and telemetry governance across 4.5M+ managed devices; governed safe shipment of 4.5M devices enabling ~R710M in projected technology cost savings (Home Ultra VIP trial).",
-    "Authored a fleet-wide forensic RCA for the Explora 3B reboot crisis, isolating a three-layer root cause (Si2183 tuner BER ~1,800x median, NTP epoch bug, OTA/CAS trigger) across ~72,000 lines of raw Irdeto IMW debug logs.",
-    "Pan-African deployment footprint: MultiChoice (50 countries), AfriCare (15 nations), abfAgri (SADC), SentimentCommand (Zambia 2026 election), Kavango mineral intelligence (SADC), Morupule predictive intelligence (Botswana).",
-    "Designed AI-optimised for African infrastructure constraints: load-shedding resilience, intermittent edge connectivity, varied device capacities, and SADC regulatory spaces (POPIA, ECZ compliance Zambia, BoZ financial standards, Botswana/SA mining rules).",
-    "AI applied to SADC's defining challenges: healthcare access (AfriCare), food security (abfAgri), mineral sovereignty (Kavango/GeoExplorer), electoral integrity (SentimentCommand), cloud cost optimisation (~ZAR30M annually saved), and digital education (Wits Business School coursebook)."
+    "Acting Principal Engineer & Lead, Data Platforms & Engineering at MultiChoice Group (a Canal+ company) — a ~20M-subscriber business across 46 markets. Selected for the MultiChoice Executive Head Training Program.",
+    "Executive analytics platform steering a 14-million-device transformation programme across 46 markets; Secure Core analytics cut a critical device-integrity exposure from 52% to under 1% of fleet.",
+    "Governed safe shipment of 4.5M devices enabling ~R710M in projected technology cost savings; authored a fleet-wide forensic RCA for the Explora 3B reboot crisis across ~72,000 lines of raw Irdeto IMW debug logs.",
+    "Pan-African deployment footprint: MultiChoice (46 markets), AfriCare (15 nations), abfAgri & AgroResilience Africa (SADC crop intelligence), Merchant Gameboard (South African informal-merchant fintech), SentimentCommand (Zambia 2026 election), Morupule predictive intelligence (Botswana).",
+    "Designed AI for African infrastructure constraints: load-shedding resilience, intermittent edge connectivity, varied device capacities, and SADC regulatory spaces (POPIA, ECZ compliance Zambia, BoZ financial standards, Botswana/SA mining rules).",
+    "AI applied to SADC's defining challenges: healthcare access (AfriCare), food security (abfAgri, AgroResilience), financial inclusion (Merchant Gameboard, Fintech platform), mineral sovereignty (GeoExplorer), electoral integrity (SentimentCommand), and digital education (Wits Business School coursebook)."
   ],
   research: [
-    "Sikazwe B. (2025–Present). AI-Augmented Strategic Reasoning Framework (AI-SRF): Agentic AI for Strategic Resilience in Emerging Markets. University of Johannesburg (PhD). Preprint published on arXiv.",
+    "Sikazwe B. (2025–Present). AI-Augmented Strategic Reasoning Framework (AI-SRF): Ethical and Responsible Agentic AI for Strategic Decision-Making in Emerging Markets. University of Johannesburg (PhD). Preprint published on arXiv.",
     "Agentic AI Workforce Design for SMEs in Emerging Markets — Design Science Research methodology, under preparation.",
     "Digitalisation and GDP Growth: A Multivariate Time Series Analysis (Botswana case study) — Master's thesis, Wits Business School, OLS R²=0.995, Python + Power BI (ARIMA, Granger causality, correlation analysis, regression techniques).",
     "Digital Strategy in the Era of AI — Authored a 12-case-study course book (Wharton-structured) across mining, media and fintech, grounded in POPIA, King IV and B-BBEE."
