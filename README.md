@@ -13,7 +13,7 @@ This is a production-grade interactive CV built as a **3-column AI dashboard** p
 - **React 19 + TypeScript** on Vite
 - **Cloudflare Pages** for edge deployment
 - **Cloudflare Workers AI** — `@cf/meta/llama-3.1-8b-instruct` for the Digital Twin chat
-- **F5-TTS** (via HuggingFace Spaces) and optional **ElevenLabs** for voice cloning
+- **Bright's own cloned voice only** — F5-TTS (HuggingFace Spaces) or an ElevenLabs clone of Bright; text-only if unavailable, never a stand-in voice
 - **Web Speech API** as TTS fallback
 
 ### Features
@@ -26,7 +26,7 @@ This is a production-grade interactive CV built as a **3-column AI dashboard** p
 | 💼 **Work With Me** | Consulting offer — services, case studies, engagement models and a discovery-call CTA; the Digital Twin also answers consulting enquiries |
 | 📋 **CV Tabs Panel** | Summary, Experience timeline, Competencies, Certifications, Posts, Research, Hobbies |
 | 🎯 **AI Job Spec Matcher** | Paste a JD and get a % match score + STAR-format strategic justification |
-| 🎤 **Voice Cloning Studio** | F5-TTS clone of a reference sample (default), ElevenLabs instant clone when a key is set, Web Speech API fallback |
+| 🎤 **Bright's Voice** | Replies are spoken in Bright's AI-cloned voice (from `public/bright_voice_ref.wav`); mute toggle; text-only when the clone is unavailable |
 | 🔒 **Safety Guardrails** | Politics, inappropriate content, and hallucination guards built into the Worker |
 
 ---
@@ -38,7 +38,7 @@ This is a production-grade interactive CV built as a **3-column AI dashboard** p
 - **Icons**: Lucide React
 - **Backend**: Cloudflare Pages Functions (Workers)
 - **AI**: Cloudflare Workers AI — `@cf/meta/llama-3.1-8b-instruct`
-- **Voice**: F5-TTS via HuggingFace Spaces (`HF_TOKEN` recommended) → ElevenLabs (`ELEVENLABS_API_KEY`, optional) → Web Speech API fallback
+- **Voice**: ElevenLabs clone of Bright (`ELEVENLABS_API_KEY` + `BRIGHT_ELEVENLABS_VOICE_ID`, recommended for reliability) → F5-TTS zero-shot clone via HuggingFace Spaces (`HF_TOKEN` recommended). No generic fallback voice.
 - **Deployment**: Cloudflare Pages
 
 ---
@@ -88,8 +88,7 @@ binding = "AI"
 ├── functions/
 │   └── api/
 │       ├── chat.ts      # Cloudflare Worker — Digital Twin chat + Job Matcher
-│       ├── tts.ts       # Cloudflare Worker — F5-TTS / ElevenLabs / MisoTTS speech proxy
-│       └── voice-clone.ts # Cloudflare Worker — ElevenLabs instant voice clone
+│       └── tts.ts       # Cloudflare Worker — speaks only in Bright's cloned voice
 ├── public/
 │   ├── profile.png      # Profile photo
 │   ├── bright_voice_ref.wav # Reference sample for voice cloning
