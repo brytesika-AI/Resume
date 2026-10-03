@@ -1,6 +1,10 @@
 import { cvData } from '../../src/data/cvData';
 
+// Workers AI chat model. Override with the CHAT_MODEL env var when Cloudflare retires a model.
+const DEFAULT_CHAT_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+
 interface Env {
+  CHAT_MODEL?: string;
   AI: {
     run: (model: string, options: Record<string, unknown>) => Promise<unknown>;
   };
@@ -82,7 +86,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       `[ADK Execution] Querying data context from ${datasource}...`,
       `[ADK Guardrails] Enforcing strict safety constraints (Politics, Safety, POPIA)`,
       `[ADK Guardrails] Safety checks complete: Pass (0 violations detected)`,
-      `[ADK Synthesizer] Invoking Llama-3.1 edge runtime in first-person voice...`
+      `[ADK Synthesizer] Invoking Workers AI edge runtime in first-person voice...`
     ];
 
     // Build base CV context string for the LLM
@@ -195,7 +199,7 @@ Your output MUST be a JSON object, with no markdown wrappers or conversational i
 Ensure the JSON is valid. If there is a parse error, the app will break, so output ONLY valid raw JSON.`;
 
       if (context.env && context.env.AI) {
-        const response = (await context.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+        const response = (await context.env.AI.run(context.env.CHAT_MODEL || DEFAULT_CHAT_MODEL, {
           messages: [
             { role: 'system', content: 'You are a JSON-only response engine representing Bright C. Sikazwe.' },
             { role: 'user', content: jobSpecPrompt }
@@ -275,7 +279,7 @@ CRITICAL RULES & GUARDRAILS:
 6. NO IDENTITY PREFIXES: Never prefix your response with "Digital Twin", "* Digital Twin", or any similar label. Start directly with your first-person reply.`;
 
     if (context.env && context.env.AI) {
-      const response = (await context.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+      const response = (await context.env.AI.run(context.env.CHAT_MODEL || DEFAULT_CHAT_MODEL, {
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: message }

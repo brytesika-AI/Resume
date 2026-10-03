@@ -116,7 +116,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     }
     return jsonResp({ audioData: `data:audio/wav;base64,${toBase64(await soundRes.arrayBuffer())}`, provider: 'huggingface-f5tts' });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
+    const msg = err instanceof Error ? err.message : typeof err === 'object' ? JSON.stringify(err) : String(err);
     console.error('F5-TTS error:', msg);
     const quota = /zerogpu|quota/i.test(msg);
     return jsonResp({

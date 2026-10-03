@@ -61,7 +61,7 @@ Hiring for a role? Paste the job specification in the 'Job Matcher' tab. Looking
   const [logs, setLogs] = useState<LogLine[]>([
     { type: 'info', text: 'Initializing Digital Twin framework...' },
     { type: 'success', text: 'Digital Twin online.' },
-    { type: 'info', text: 'Cloudflare Workers AI Llama-3.1 connection established. Ready for queries.' }
+    { type: 'info', text: 'Cloudflare Workers AI connection established. Ready for queries.' }
   ]);
 
   const [activeTab, setActiveTab] = useState<'summary' | 'experience' | 'competencies' | 'certifications' | 'african-context' | 'research' | 'hobbies' | 'linkedin-posts' | 'job-matcher' | 'consulting'>('summary');
