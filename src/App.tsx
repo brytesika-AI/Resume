@@ -65,7 +65,8 @@ Hiring for a role? Paste the job specification in the 'Job Matcher' tab. Looking
   ]);
 
   const [activeTab, setActiveTab] = useState<'summary' | 'experience' | 'competencies' | 'certifications' | 'african-context' | 'research' | 'hobbies' | 'linkedin-posts' | 'job-matcher' | 'consulting'>('summary');
-  const [portfolioFilter, setPortfolioFilter] = useState<'All' | 'Agriculture & Health' | 'Mining & Resources' | 'Telco & IoT' | 'Fintech' | 'Strategy & Politics'>('All');
+  const [portfolioFilter, setPortfolioFilter] = useState<'All' | 'Growth & Commerce' | 'Telco & IoT' | 'Agriculture & Health' | 'Fintech' | 'Mining & Resources' | 'Strategy & Politics'>('All');
+  const [workingOnly, setWorkingOnly] = useState(true);
 
   // Job Spec Matcher States
   const [jobSpecText, setJobSpecText] = useState('');
@@ -145,16 +146,29 @@ Hiring for a role? Paste the job specification in the 'Job Matcher' tab. Looking
 
 
 
-  // Filter projects
-  const filteredProjects = cvData.projects.filter(project => {
-    if (portfolioFilter === 'All') return true;
-    if (portfolioFilter === 'Agriculture & Health') return project.sector.includes('Agriculture') || project.sector.includes('Health');
-    if (portfolioFilter === 'Mining & Resources') return project.sector.includes('Mining') || project.sector.includes('Geology');
-    if (portfolioFilter === 'Telco & IoT') return project.sector.includes('Telecommunications') || project.sector.includes('IoT');
-    if (portfolioFilter === 'Fintech') return project.sector === 'Fintech';
-    if (portfolioFilter === 'Strategy & Politics') return project.sector.includes('Politics') || project.sector.includes('Research') || project.sector.includes('Strategy');
-    return true;
-  });
+  // Filter and sort projects
+  const filteredProjects = cvData.projects
+    .filter(project => {
+      if (workingOnly && project.status === 'Prototype') return false;
+      if (portfolioFilter === 'All') return true;
+      if (portfolioFilter === 'Growth & Commerce') return project.sector.includes('Growth') || project.sector.includes('Commerce');
+      if (portfolioFilter === 'Telco & IoT') return project.sector.includes('Telecommunications') || project.sector.includes('IoT') || project.sector.includes('Telco');
+      if (portfolioFilter === 'Agriculture & Health') return project.sector.includes('Agriculture') || project.sector.includes('Health');
+      if (portfolioFilter === 'Fintech') return project.sector === 'Fintech';
+      if (portfolioFilter === 'Mining & Resources') return project.sector.includes('Mining') || project.sector.includes('Geology');
+      if (portfolioFilter === 'Strategy & Politics') return project.sector.includes('Politics') || project.sector.includes('Research') || project.sector.includes('Strategy');
+      return true;
+    })
+    .slice()
+    .sort((a, b) => {
+      const getPriority = (status?: string) => {
+        if (status === 'Client engagement') return 1;
+        if (status === 'Live in production') return 2;
+        if (status === 'Delivered') return 3;
+        return 4; // Prototype
+      };
+      return getPriority(a.status) - getPriority(b.status);
+    });
 
   // Deep dive asks about a project
   const handleProjectAsk = (project: Project) => {
@@ -950,20 +964,45 @@ With 17 years spanning enterprise AI strategy, C-suite analytics, and production
         {/* COLUMN 2: PORTFOLIO GRID SECTION (SCROLLABLE CARD LIST) */}
         <section className="glass-panel portfolio-section middle-col">
           <div className="portfolio-header-container">
-            <h3 className="section-title">
-              <Layers size={18} color="var(--color-orchestrator)" />
-              Live AI Product Portfolio
-            </h3>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <h3 className="section-title" style={{ margin: 0 }}>
+                <Layers size={18} color="var(--color-orchestrator)" />
+                Working Projects & Client Results
+              </h3>
+              <label style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                userSelect: 'none',
+                background: workingOnly ? 'rgba(16, 185, 129, 0.14)' : 'rgba(255, 255, 255, 0.04)',
+                border: `1px solid ${workingOnly ? '#10b981' : 'var(--border-mute)'}`,
+                padding: '0.2rem 0.55rem',
+                borderRadius: '12px',
+                color: workingOnly ? '#10b981' : 'var(--text-secondary)',
+                fontWeight: 600,
+                transition: 'all 0.2s ease'
+              }}>
+                <input
+                  type="checkbox"
+                  checked={workingOnly}
+                  onChange={(e) => setWorkingOnly(e.target.checked)}
+                  style={{ accentColor: '#10b981', cursor: 'pointer' }}
+                />
+                Working only
+              </label>
+            </div>
             
             {/* Filter bar */}
             <div className="filters-bar">
-              {(['All', 'Agriculture & Health', 'Mining & Resources', 'Telco & IoT', 'Fintech', 'Strategy & Politics'] as const).map(filter => (
+              {(['All', 'Growth & Commerce', 'Telco & IoT', 'Agriculture & Health', 'Fintech', 'Mining & Resources', 'Strategy & Politics'] as const).map(filter => (
                 <button
                   key={filter}
                   onClick={() => setPortfolioFilter(filter)}
                   className={`filter-chip ${portfolioFilter === filter ? 'active' : ''}`}
                 >
-                  {filter.split(' ')[0]}
+                  {filter === 'Growth & Commerce' ? 'Growth' : filter.split(' ')[0]}
                 </button>
               ))}
             </div>
@@ -974,14 +1013,49 @@ With 17 years spanning enterprise AI strategy, C-suite analytics, and production
             {filteredProjects.map(project => (
               <div key={project.id} className="glass-panel project-card">
                 <div className="project-card-header">
-                  <span className="tag" style={{ borderColor: 'var(--color-orchestrator)', color: 'var(--color-orchestrator)', width: 'fit-content' }}>
-                    {project.sector}
-                  </span>
-                  <h4 className="project-title" style={{ fontSize: '1rem', marginTop: '0.25rem' }}>{project.title}</h4>
-                  <p className="project-desc" style={{ fontSize: '0.8rem', lineHeight: '1.4' }}>{project.description}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <span className="tag" style={{ borderColor: 'var(--color-orchestrator)', color: 'var(--color-orchestrator)', width: 'fit-content' }}>
+                      {project.sector}
+                    </span>
+                    {project.status && (
+                      <span className="tag" style={{
+                        width: 'fit-content',
+                        fontWeight: 600,
+                        fontSize: '0.7rem',
+                        ...((project.status === 'Client engagement' || project.status === 'Live in production')
+                          ? { color: '#10b981', borderColor: 'rgba(16, 185, 129, 0.45)', background: 'rgba(16, 185, 129, 0.12)' }
+                          : project.status === 'Delivered'
+                          ? { color: '#3b82f6', borderColor: 'rgba(59, 130, 246, 0.45)', background: 'rgba(59, 130, 246, 0.12)' }
+                          : { color: '#94a3b8', borderColor: 'rgba(148, 163, 184, 0.35)', background: 'rgba(148, 163, 184, 0.08)' })
+                      }}>
+                        {project.status}
+                      </span>
+                    )}
+                  </div>
+                  <h4 className="project-title" style={{ fontSize: '1rem', marginTop: '0.35rem' }}>{project.title}</h4>
+                  {(project.client || project.period) && (
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.15rem', display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
+                      {project.client && <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Client: {project.client}</span>}
+                      {project.client && project.period && <span style={{ color: 'var(--text-muted)' }}>·</span>}
+                      {project.period && <span>{project.period}</span>}
+                    </div>
+                  )}
+                  <p className="project-desc" style={{ fontSize: '0.8rem', lineHeight: '1.4', marginTop: '0.35rem' }}>{project.description}</p>
+                  {project.outcomes && project.outcomes.length > 0 && (
+                    <div style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.07)', paddingTop: '0.45rem' }}>
+                      <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-orchestrator)', fontWeight: 600, marginBottom: '0.25rem' }}>
+                        Key Results & Outcomes
+                      </div>
+                      <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: '1.4', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                        {project.outcomes.map((outcome, idx) => (
+                          <li key={idx} style={{ wordBreak: 'break-word' }}>{outcome}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
 
-                <div className="project-tags" style={{ marginTop: '0.25rem' }}>
+                <div className="project-tags" style={{ marginTop: '0.35rem' }}>
                   {project.techStack.slice(0, 4).map(tech => (
                     <span key={tech} className="tag">{tech}</span>
                   ))}
@@ -1085,9 +1159,9 @@ With 17 years spanning enterprise AI strategy, C-suite analytics, and production
             
             {/* EXECUTIVE SUMMARY */}
             {activeTab === 'summary' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', width: '100%', boxSizing: 'border-box' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', width: '100%', boxSizing: 'border-box', minWidth: 0, overflowWrap: 'anywhere' }}>
                 <h4 style={{ fontSize: '1.1rem', wordBreak: 'break-word' }}>Executive Profile</h4>
-                <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '0.85rem', wordBreak: 'break-word' }}>
+                <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '0.85rem', wordBreak: 'break-word', overflowWrap: 'anywhere', minWidth: 0 }}>
                   {cvData.personalInfo.summary}
                 </p>
                 <div style={{ marginTop: '0.5rem', padding: '0.75rem', borderLeft: '3px solid var(--color-strategy)', background: 'rgba(var(--color-strategy-rgb), 0.04)', width: '100%', boxSizing: 'border-box' }}>

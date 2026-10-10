@@ -176,49 +176,109 @@ export const cvData: CVData = {
       ]
     },
     {
-      id: "strategylab-ai",
-      title: "StrategyLab AI | McKinsey-Grade Business Strategy Decision Engine",
-      description: "McKinsey-grade business strategy decision engine providing analytical frameworks, structured MECE problem-solving, and automated strategic validation of business initiatives using agentic LLM workflows.",
-      liveUrl: "https://strategylab-ai.bryte-sika.workers.dev/",
-      github: "https://github.com/brytesika-AI/AI-Strategy-tools",
-      sector: "Strategy & Politics",
-      techStack: ["Cloudflare Workers", "React", "AI Decision Engine", "McKinsey Frameworks", "MECE"]
-    },
-    {
-      id: "merchant-gameboard",
-      title: "Merchant Gameboard | Informal-Merchant Health Intelligence",
-      description: "Live, explainable view of informal-merchant health built from payment-terminal signals, modelled on a South African fintech environment (100k+ terminals, ~3M daily transactions across spaza shops in Soweto, Khayelitsha, Umlazi, Tembisa and Mitchells Plain). Gemini 2.5 Flash explainability chips (source · reasoning · confidence + recommended action), zero-shot merchant-pattern classification, and World Bank macro indicators — on synthetic PaySim data with SASSA grant surges and load-shedding dips.",
-      liveUrl: "https://merchant-gameboard.pages.dev",
-      github: "https://github.com/brytesika-AI/Merchant-Gameboard",
-      sector: "Fintech",
-      techStack: ["Cloudflare Pages Functions", "Hono", "Gemini 2.5 Flash", "Hugging Face Zero-Shot", "World Bank API", "PaySim Synthetic Data"]
-    },
-    {
-      id: "brytesika-fintech",
-      title: "BryteSika Fintech Platform",
-      description: "AI-driven financial-services ecosystem consolidating three platforms: an Autonomous Field Ops engine (agent routing, geotagged offline collection, agent wallets), a Proactive Credit Co-Pilot (real-time credit-risk scoring, dynamic limits, automated recovery alerts), and a Zero-Touch onboarding engine (KYC/AML, document OCR, fraud screening, instant account provisioning).",
+      id: "technical-calls-platform",
+      title: "Technical Calls Intelligence Platform — MultiChoice",
+      description: "140,798 customer calls mapped to 12 value streams, failed decisions and owners; proved on Fabric, now live on serverless AWS with Bedrock batch inference; ranked intervention portfolio with agreed KPIs.",
       liveUrl: "#",
-      github: "https://github.com/brytesika-AI/Fintech",
-      sector: "Fintech",
-      techStack: ["Python", "FastAPI", "Node.js", "scikit-learn", "Redis", "PostgreSQL"]
-    },
-    {
-      id: "agroresilience-africa",
-      title: "AgroResilience Africa | Continental Crop Monitoring & AI Forecasting",
-      description: "Edge-computed geospatial platform tracking crop health and forecasting yields across Africa using Digital Earth Africa's Open Data Cube (STAC API). Computes Sentinel-2 Enhanced Vegetation Index (EVI) with SCL cloud masking directly in Cloudflare Workers, with Workers AI yield narratives — grounded in Zambia's Mkushi Farm Block, Southern Province drought early-warning and SUA Tanzania field validation.",
-      liveUrl: "https://agro-resilience-africa.pages.dev",
-      github: "https://github.com/brytesika-AI/AgroResilience-Africa---Continental-Crop-Monitoring-AI-Forecasting-System",
-      sector: "Agriculture & Health",
-      techStack: ["Cloudflare Workers AI", "Digital Earth Africa STAC", "Sentinel-2 EVI", "React", "Leaflet", "Cloudflare KV"]
-    },
-    {
-      id: "fan-segmentation",
-      title: "Canal+ Smartcard Fan Segmentation",
-      description: "Classified 489,425 connected smartcards from decoder telemetry into four validated activation cohorts (298,772 activatable), surviving three independent validation tests and adopted cross-border with Canal+; extended by proxy modelling to the ~5.5M unconnected base — commercial AI driving marketing addressability at scale.",
-      liveUrl: "#",
-      github: "#",
+      github: "https://github.com/brytesika-AI",
       sector: "Telco & IoT",
-      techStack: ["Databricks SQL", "Python", "Power BI", "Decoder Telemetry", "Proxy Modelling"]
+      techStack: ["Microsoft Fabric", "AWS S3", "AWS Glue", "Step Functions", "EventBridge", "Athena", "Bedrock Batch", "PySpark", "POPIA Masking"],
+      status: "Live in production",
+      client: "MultiChoice Group (a Canal+ company)",
+      period: "2026",
+      outcomes: [
+        "Medallion lakehouse over 140,798 call records (140,796 unique after removing duplicates) with protected keys, masked identifiers and zero validation failures.",
+        "AI classification taxonomy covering 12 value streams and 60+ structured output fields mapping calls to failed upstream decisions and accountable owners.",
+        "Migrated from Microsoft Fabric to serverless AWS (S3, Glue, Step Functions, Athena, Bedrock batch inference) allowing costs to scale dynamically with use.",
+        "Ranked intervention portfolio with agreed operational KPIs across preventable calls, digital channel migration, and automation potential."
+      ]
+    },
+    {
+      id: "incident-triage-pipeline",
+      title: "Five-Agent Incident Triage Pipeline — MultiChoice",
+      description: "Five-agent triage of priority incidents in production, with human escalation and evaluation gates before release.",
+      liveUrl: "#",
+      github: "https://github.com/brytesika-AI",
+      sector: "Telco & IoT",
+      techStack: ["Multi-Agent System", "Live Operational Data", "Human-in-the-Loop", "Tool Execution", "Evaluation Harness"],
+      status: "Live in production",
+      client: "MultiChoice Group",
+      period: "2026",
+      outcomes: [
+        "Five-agent classification pipeline running on live operational data with autonomous tool usage and incident reasoning.",
+        "Human escalation gates ensuring complex or low-confidence operational incidents transfer seamlessly to staff.",
+        "Governed under written Build → Secure → Evaluate → Ship standard; portfolio-wide audit validated and resolved four P0 issues."
+      ]
+    },
+    {
+      id: "support-call-classifier",
+      title: "Support Call Transcript Classifier — MultiChoice",
+      description: "LLM classification of support calls by decoder error code, with personal data masked before any model call; separates network faults from billing blockers.",
+      liveUrl: "#",
+      github: "https://github.com/brytesika-AI",
+      sector: "Telco & IoT",
+      techStack: ["Local LLMs", "Ollama", "LangChain", "Claude API", "Regex PII Masking", "Llama 3.1"],
+      status: "Delivered",
+      client: "MultiChoice Group",
+      period: "Sept 2026",
+      outcomes: [
+        "Automated classification engine routing customer support conversations by decoder error code to resolve network vs billing blockers first time.",
+        "Rigorous pattern-based PII masking ensuring customer personal data is scrubbed before reaching any LLM endpoint.",
+        "Local 5-agent Llama 3.1 implementation processed 106,761 call records end-to-end entirely within on-premise infrastructure without external data egress."
+      ]
+    },
+    {
+      id: "fsu-cca-upgrade",
+      title: "FSU/CCA Fleet Upgrade Analytics — CANAL+ & MultiChoice",
+      description: "Data lead for a 14M-device, 46-country rollout with CANAL+: daily executive view, adoption 28% → 55%+ in six days, fault isolated on ~1.6M devices, exposure cut from 52% to under 1%.",
+      liveUrl: "#",
+      github: "https://github.com/brytesika-AI",
+      sector: "Telco & IoT",
+      techStack: ["Python", "Azure Blob", "Fleet Telemetry", "Root-Cause Analytics", "Power BI", "Executive Dashboards"],
+      status: "Delivered",
+      client: "MultiChoice and CANAL+",
+      period: "2026",
+      outcomes: [
+        "Delivered daily executive analytics enabling leadership to steer the 14M+ device, 46-country security software programme.",
+        "Accelerated trial group adoption from 28% to 55%+ within six days.",
+        "Isolated root cause of fleet fault affecting ~1.6M devices, guiding targeted remediation for ~1.4M devices.",
+        "Reduced security-integrity exposure across fleet devices from 52% to under 1%."
+      ]
+    },
+    {
+      id: "epl-fan-segmentation",
+      title: "EPL Viewer Cohorts & Fan Segmentation — CANAL+ & MultiChoice",
+      description: "489,425 smartcards classified by EPL viewing intensity into four campaign cohorts; 298,772 activatable customers sent to marketing automation; 8× gap with the Paris team resolved into a joint standard.",
+      liveUrl: "#",
+      github: "https://github.com/brytesika-AI",
+      sector: "Telco & IoT",
+      techStack: ["Databricks SQL", "Python", "Power BI", "Decoder Telemetry", "Proxy Modelling", "Marketing Automation"],
+      status: "Delivered",
+      client: "CANAL+ (via MultiChoice Advanced Analytics)",
+      period: "2026",
+      outcomes: [
+        "Classified 489,425 connected smartcards by cumulative EPL viewing minutes into Retain, Win-Back, Upsell, and Awareness cohorts.",
+        "Fed 298,772 campaign-ready activatable customers directly to marketing-automation platforms.",
+        "Resolved an 8× telemetry gap with CANAL+ Paris team, establishing an agreed cross-border joint standard.",
+        "Estimated Football Affinity Scores across the ~5.5M unconnected subscriber base."
+      ]
+    },
+    {
+      id: "enterprise-telemetry-platform",
+      title: "Enterprise Telemetry Platform — MultiChoice",
+      description: "Telemetry pipelines for 14M connected devices across 46 markets on BigQuery, Fabric, Databricks and dbt; re-engineered log mining cut processing time and compute cost.",
+      liveUrl: "#",
+      github: "https://github.com/brytesika-AI",
+      sector: "Telco & IoT",
+      techStack: ["GCP BigQuery", "Microsoft Fabric", "Databricks", "dbt", "PySpark", "High-Volume Telemetry"],
+      status: "Live in production",
+      client: "MultiChoice Group",
+      period: "2019 – Present",
+      outcomes: [
+        "Core telemetry pipelines processing signals from 14M connected devices and 20M subscribers across 46 markets.",
+        "Multi-cloud enterprise data platform integrating BigQuery, Microsoft Fabric, Databricks, and dbt.",
+        "Re-engineered server-side log filtering and parallel ingestion, drastically reducing compute runtime and cloud spend."
+      ]
     },
     {
       id: "chicken-iq",
@@ -227,7 +287,54 @@ export const cvData: CVData = {
       liveUrl: "https://chicken-iq.pages.dev",
       github: "#",
       sector: "Agriculture & Health",
-      techStack: ["React", "Vite", "Tailwind CSS", "Local Storage", "Internationalization"]
+      techStack: ["React", "Vite", "Tailwind CSS", "Local Storage", "Internationalization"],
+      status: "Live in production",
+      client: "brytesika-AI",
+      period: "2026",
+      outcomes: [
+        "Offline-first poultry advice app detecting disease via Cloudflare Workers AI with ResNet-50 filter before Llama vision.",
+        "Benchmarked against Hy-Line Brown breed standards; includes interactive Test Lab and trilingual support (English, Bemba, Nyanja)."
+      ]
+    },
+    {
+      id: "strategylab-ai",
+      title: "StrategyLab AI | McKinsey-Grade Business Strategy Decision Engine",
+      description: "McKinsey-grade business strategy decision engine providing analytical frameworks, structured MECE problem-solving, and automated strategic validation of business initiatives using agentic LLM workflows.",
+      liveUrl: "https://strategylab-ai.bryte-sika.workers.dev/",
+      github: "https://github.com/brytesika-AI/AI-Strategy-tools",
+      sector: "Strategy & Politics",
+      techStack: ["Cloudflare Workers", "React", "AI Decision Engine", "McKinsey Frameworks", "MECE"],
+      status: "Prototype"
+    },
+    {
+      id: "merchant-gameboard",
+      title: "Merchant Gameboard | Informal-Merchant Health Intelligence",
+      description: "Live, explainable view of informal-merchant health built from payment-terminal signals, modelled on a South African fintech environment (100k+ terminals, ~3M daily transactions across spaza shops in Soweto, Khayelitsha, Umlazi, Tembisa and Mitchells Plain). Gemini 2.5 Flash explainability chips (source · reasoning · confidence + recommended action), zero-shot merchant-pattern classification, and World Bank macro indicators — on synthetic PaySim data with SASSA grant surges and load-shedding dips.",
+      liveUrl: "https://merchant-gameboard.pages.dev",
+      github: "https://github.com/brytesika-AI/Merchant-Gameboard",
+      sector: "Fintech",
+      techStack: ["Cloudflare Pages Functions", "Hono", "Gemini 2.5 Flash", "Hugging Face Zero-Shot", "World Bank API", "PaySim Synthetic Data"],
+      status: "Prototype"
+    },
+    {
+      id: "brytesika-fintech",
+      title: "BryteSika Fintech Platform",
+      description: "AI-driven financial-services ecosystem consolidating three platforms: an Autonomous Field Ops engine (agent routing, geotagged offline collection, agent wallets), a Proactive Credit Co-Pilot (real-time credit-risk scoring, dynamic limits, automated recovery alerts), and a Zero-Touch onboarding engine (KYC/AML, document OCR, fraud screening, instant account provisioning).",
+      liveUrl: "#",
+      github: "https://github.com/brytesika-AI/Fintech",
+      sector: "Fintech",
+      techStack: ["Python", "FastAPI", "Node.js", "scikit-learn", "Redis", "PostgreSQL"],
+      status: "Prototype"
+    },
+    {
+      id: "agroresilience-africa",
+      title: "AgroResilience Africa | Continental Crop Monitoring & AI Forecasting",
+      description: "Edge-computed geospatial platform tracking crop health and forecasting yields across Africa using Digital Earth Africa's Open Data Cube (STAC API). Computes Sentinel-2 Enhanced Vegetation Index (EVI) with SCL cloud masking directly in Cloudflare Workers, with Workers AI yield narratives — grounded in Zambia's Mkushi Farm Block, Southern Province drought early-warning and SUA Tanzania field validation.",
+      liveUrl: "https://agro-resilience-africa.pages.dev",
+      github: "https://github.com/brytesika-AI/AgroResilience-Africa---Continental-Crop-Monitoring-AI-Forecasting-System",
+      sector: "Agriculture & Health",
+      techStack: ["Cloudflare Workers AI", "Digital Earth Africa STAC", "Sentinel-2 EVI", "React", "Leaflet", "Cloudflare KV"],
+      status: "Prototype"
     },
     {
       id: "morupule-predictive",
@@ -236,7 +343,8 @@ export const cvData: CVData = {
       liveUrl: "https://morupule-predictive-intelligence.vercel.app/",
       github: "https://github.com/brytesika-AI/morupule-predictive-intelligence",
       sector: "Mining & Geology",
-      techStack: ["Python", "pandas", "ARIMA", "Forecasting", "Streamlit"]
+      techStack: ["Python", "pandas", "ARIMA", "Forecasting", "Streamlit"],
+      status: "Prototype"
     },
     {
       id: "spectra",
@@ -245,7 +353,8 @@ export const cvData: CVData = {
       liveUrl: "https://spectra-digital-twin.vercel.app",
       github: "https://github.com/brytesika-AI/digital-twin-media",
       sector: "Telco & IoT",
-      techStack: ["Cloudflare Workers AI", "React 3D", "YOLO", "Synthetic Data", "FleetInsightsSpecialist"]
+      techStack: ["Cloudflare Workers AI", "React 3D", "YOLO", "Synthetic Data", "FleetInsightsSpecialist"],
+      status: "Prototype"
     },
     {
       id: "sentimentcommand",
@@ -254,7 +363,8 @@ export const cvData: CVData = {
       liveUrl: "https://zambia-election-app.vercel.app",
       github: "https://github.com/brytesika-AI/Election-Tracker",
       sector: "Strategy & Politics",
-      techStack: ["Next.js", "LangChain", "Multi-Agent System", "NLP", "Social APIs"]
+      techStack: ["Next.js", "LangChain", "Multi-Agent System", "NLP", "Social APIs"],
+      status: "Prototype"
     },
     {
       id: "geo-explorer-ai",
@@ -263,7 +373,8 @@ export const cvData: CVData = {
       liveUrl: "https://geo-explorer-ai.bryte-sika.workers.dev",
       github: "https://github.com/brytesika-AI/geo-explorer-ai",
       sector: "Mining & Geology",
-      techStack: ["Python", "scikit-learn", "GeoPandas", "Shapely", "Geospatial ML"]
+      techStack: ["Python", "scikit-learn", "GeoPandas", "Shapely", "Geospatial ML"],
+      status: "Prototype"
     },
     {
       id: "abfagri",
@@ -272,7 +383,8 @@ export const cvData: CVData = {
       liveUrl: "https://abfagri.pages.dev",
       github: "https://github.com/brytesika-AI/abf_agriculture_intelligience",
       sector: "Agriculture & Health",
-      techStack: ["React", "FastAPI", "SAFEX API", "Satellite Imagery API", "Llama 3.1"]
+      techStack: ["React", "FastAPI", "SAFEX API", "Satellite Imagery API", "Llama 3.1"],
+      status: "Prototype"
     },
     {
       id: "betcopilot-ai",
@@ -281,7 +393,8 @@ export const cvData: CVData = {
       liveUrl: "https://betcopilot-ai-showcase.pages.dev",
       github: "https://github.com/brytesika-AI/BetCopilot-AI",
       sector: "Strategy & Politics",
-      techStack: ["React", "Vite", "Tailwind CSS", "Recharts", "ML Modeling"]
+      techStack: ["React", "Vite", "Tailwind CSS", "Recharts", "ML Modeling"],
+      status: "Prototype"
     },
     {
       id: "tiny-tamagotchi",
@@ -290,7 +403,8 @@ export const cvData: CVData = {
       liveUrl: "https://tiny-tamagotchi-mvp.pages.dev",
       github: "https://github.com/brytesika-AI/Tiny-Tamagotchi-MVP",
       sector: "Strategy & Politics",
-      techStack: ["React", "Vite", "Tailwind CSS", "Framer Motion", "Jest"]
+      techStack: ["React", "Vite", "Tailwind CSS", "Framer Motion", "Jest"],
+      status: "Prototype"
     },
     {
       id: "hustle-ai-platforms",
@@ -299,7 +413,8 @@ export const cvData: CVData = {
       liveUrl: "https://hustle-revenue-intelligence.pages.dev",
       github: "https://github.com/brytesika-AI/hustle-ai-platforms",
       sector: "Retail & Strategy",
-      techStack: ["React", "Vite", "Tailwind CSS", "Recharts", "Multi-Tenant"]
+      techStack: ["React", "Vite", "Tailwind CSS", "Recharts", "Multi-Tenant"],
+      status: "Prototype"
     },
     {
       id: "africare",
@@ -308,7 +423,8 @@ export const cvData: CVData = {
       liveUrl: "https://africare.pages.dev",
       github: "https://github.com/brytesika-AI/africare",
       sector: "Agriculture & Health",
-      techStack: ["Cloudflare Workers AI", "Llama 3.1", "LangChain ReAct", "FastAPI", "MLflow", "FHIR/DHIS2"]
+      techStack: ["Cloudflare Workers AI", "Llama 3.1", "LangChain ReAct", "FastAPI", "MLflow", "FHIR/DHIS2"],
+      status: "Prototype"
     },
     {
       id: "dischem",
@@ -317,7 +433,8 @@ export const cvData: CVData = {
       liveUrl: "#",
       github: "https://github.com/brytesika-AI/Data-Engineering-and-Architecture-project-Dischem-Mockup-",
       sector: "Retail & Strategy",
-      techStack: ["Medallion Architecture", "Python", "GeoPandas", "ML Scoring", "PMO"]
+      techStack: ["Medallion Architecture", "Python", "GeoPandas", "ML Scoring", "PMO"],
+      status: "Prototype"
     },
     {
       id: "aisrf",
@@ -326,7 +443,8 @@ export const cvData: CVData = {
       liveUrl: "https://ai-srf-dashboard.pages.dev",
       github: "https://github.com/brytesika-AI/1PhD-Thesis---AI-in-strategic-Decision-making",
       sector: "Strategy & Politics",
-      techStack: ["Cloudflare Workers", "Cloudflare D1/KV", "DSPy/GEPA", "Groq", "FastAPI", "Python", "Streamlit"]
+      techStack: ["Cloudflare Workers", "Cloudflare D1/KV", "DSPy/GEPA", "Groq", "FastAPI", "Python", "Streamlit"],
+      status: "Prototype"
     },
     {
       id: "kaggriculture",
@@ -335,7 +453,8 @@ export const cvData: CVData = {
       liveUrl: "https://kagriculture.vercel.app",
       github: "https://github.com/brytesika-AI/Kaggriculture",
       sector: "Agriculture & Health",
-      techStack: ["Next.js", "Vercel", "Multi-Agent Simulation", "Agricultural AI", "Game Theory"]
+      techStack: ["Next.js", "Vercel", "Multi-Agent Simulation", "Agricultural AI", "Game Theory"],
+      status: "Prototype"
     },
     {
       id: "geoai-aquaculture",
@@ -344,7 +463,8 @@ export const cvData: CVData = {
       liveUrl: "https://app-six-nu-23.vercel.app",
       github: "https://github.com/brytesika-AI/GeoAI-Aquaculture-Pond-Identification-Challenge-by-FAO-and-ITU",
       sector: "Agriculture & Health",
-      techStack: ["Satellite Imagery", "GeoAI", "Geospatial ML", "Next.js", "Vercel", "Interactive Mapping"]
+      techStack: ["Satellite Imagery", "GeoAI", "Geospatial ML", "Next.js", "Vercel", "Interactive Mapping"],
+      status: "Prototype"
     },
     {
       id: "mosaic",
@@ -353,7 +473,8 @@ export const cvData: CVData = {
       liveUrl: "https://mosaic.bryte-sika.workers.dev",
       github: "https://github.com/brytesika-AI/MOSAIC-Merchant-OS-Architecture-Investment-Cockpit-v3.0-",
       sector: "Retail & Strategy",
-      techStack: ["Cloudflare Workers", "Cloudflare D1", "Next.js", "React", "Multi-Agent AI", "TOGAF", "TIME Portfolio"]
+      techStack: ["Cloudflare Workers", "Cloudflare D1", "Next.js", "React", "Multi-Agent AI", "TOGAF", "TIME Portfolio"],
+      status: "Prototype"
     },
     {
       id: "geospatial-analysis-minerals",
@@ -362,7 +483,8 @@ export const cvData: CVData = {
       liveUrl: "#",
       github: "https://github.com/brytesika-AI/Geospatial-Analysis-of-Minerals",
       sector: "Mining & Geology",
-      techStack: ["Python", "Streamlit", "GeoPandas", "Shapely", "GIS Mapping"]
+      techStack: ["Python", "Streamlit", "GeoPandas", "Shapely", "GIS Mapping"],
+      status: "Prototype"
     },
     {
       id: "critical-minerals-intelligence",
@@ -371,7 +493,8 @@ export const cvData: CVData = {
       liveUrl: "#",
       github: "https://github.com/brytesika-AI/Critical-Minerals-Intelligience-Africa",
       sector: "Mining & Geology",
-      techStack: ["Python", "Streamlit", "Pandas", "Risk Modeling"]
+      techStack: ["Python", "Streamlit", "Pandas", "Risk Modeling"],
+      status: "Prototype"
     },
     {
       id: "ai-srf-streamlit-app",
@@ -380,7 +503,8 @@ export const cvData: CVData = {
       liveUrl: "#",
       github: "https://github.com/brytesika-AI/ai_srf_streamlit_app",
       sector: "Strategy & Politics",
-      techStack: ["Python", "Streamlit", "LangChain", "Multi-Agent System"]
+      techStack: ["Python", "Streamlit", "LangChain", "Multi-Agent System"],
+      status: "Prototype"
     },
     {
       id: "powerbi-fleet-mining",
@@ -389,7 +513,8 @@ export const cvData: CVData = {
       liveUrl: "#",
       github: "#",
       sector: "Mining & Geology",
-      techStack: ["Power BI", "Azure", "Mining Analytics", "Fleet Management"]
+      techStack: ["Power BI", "Azure", "Mining Analytics", "Fleet Management"],
+      status: "Prototype"
     },
     {
       id: "digital-strategy-coursebook",
@@ -398,16 +523,8 @@ export const cvData: CVData = {
       liveUrl: "#",
       github: "#",
       sector: "Strategy & Politics",
-      techStack: ["Instructional Design", "African Regulatory Frameworks", "AI Governance"]
-    },
-    {
-      id: "fsu",
-      title: "FSU Telemetry IoT Analytics",
-      description: "Multi-terabyte parallel telemetry pipeline with ProcessPoolExecutor (32 workers) for CPU decompression and Azure Blob mapping. Surfaced ~50% decoder failure rates across 4.5M+ devices.",
-      liveUrl: "#",
-      github: "#",
-      sector: "Telco & IoT",
-      techStack: ["Azure Blob SDK", "Python", "ProcessPoolExecutor", "ThreadPoolExecutor", "pandas", "T-SQL", "Power BI"]
+      techStack: ["Instructional Design", "African Regulatory Frameworks", "AI Governance"],
+      status: "Prototype"
     }
   ],
   experience: [
