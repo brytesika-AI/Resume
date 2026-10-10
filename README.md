@@ -1,6 +1,8 @@
 # Bright C. Sikazwe — AI Digital Twin CV
 
-> **Live interactive CV and AI Digital Twin** for Bright C. Sikazwe — AI Strategist, Data Platforms & Engineering Leader, Acting Principal Engineer at MultiChoice Group (a Canal+ company), and PhD Candidate at the University of Johannesburg.
+> **Live interactive CV and AI Digital Twin** for Bright C. Sikazwe — Executive AI, Data & Digital Leader, Founder & Principal of brytesika-AI (independent consulting), Acting Principal Engineer at MultiChoice Group (a Canal+ company), and PhD Candidate at the University of Johannesburg.
+>
+> Live: https://bright-sikazwe-cv.pages.dev/
 
 ---
 
@@ -11,7 +13,7 @@ This is a production-grade interactive CV built as a **3-column AI dashboard** p
 - **React 19 + TypeScript** on Vite
 - **Cloudflare Pages** for edge deployment
 - **Cloudflare Workers AI** — `@cf/meta/llama-3.1-8b-instruct` for the Digital Twin chat
-- **Coqui XTTS-v2** (via HuggingFace Spaces) for optional voice cloning
+- **Bright's own cloned voice only** — F5-TTS (HuggingFace Spaces) or an ElevenLabs clone of Bright; text-only if unavailable, never a stand-in voice
 - **Web Speech API** as TTS fallback
 
 ### Features
@@ -20,10 +22,11 @@ This is a production-grade interactive CV built as a **3-column AI dashboard** p
 |---|---|
 | 🤖 **AI Digital Twin Chat** | Llama-3.1-8b-instruct responds as Bright in first-person with STAR-format answers |
 | 🧠 **Agent Thought Terminal** | Live ADK-style observability logs — tool selection, safety checks, synthesis steps |
-| 📁 **Live AI Product Portfolio** | 8 production AI systems with sector filters, tech stack tags, and GitHub/live links |
+| 📁 **Live AI Product Portfolio** | 25+ AI systems with sector filters, tech stack tags, and GitHub/live links |
+| 💼 **Work With Me** | Consulting offer — services, case studies, engagement models and a discovery-call CTA; the Digital Twin also answers consulting enquiries |
 | 📋 **CV Tabs Panel** | Summary, Experience timeline, Competencies, Certifications, Posts, Research, Hobbies |
 | 🎯 **AI Job Spec Matcher** | Paste a JD and get a % match score + STAR-format strategic justification |
-| 🎤 **Voice Cloning Studio** | Record 10–15s voice sample → Coqui XTTS-v2 clones it for TTS responses |
+| 🎤 **Bright's Voice** | Replies are spoken in Bright's AI-cloned voice (from `public/bright_voice_ref.wav`); mute toggle; text-only when the clone is unavailable |
 | 🔒 **Safety Guardrails** | Politics, inappropriate content, and hallucination guards built into the Worker |
 
 ---
@@ -35,7 +38,7 @@ This is a production-grade interactive CV built as a **3-column AI dashboard** p
 - **Icons**: Lucide React
 - **Backend**: Cloudflare Pages Functions (Workers)
 - **AI**: Cloudflare Workers AI — `@cf/meta/llama-3.1-8b-instruct`
-- **Voice**: Coqui XTTS-v2 (open-source) via HuggingFace Spaces → Web Speech API fallback
+- **Voice**: ElevenLabs clone of Bright (`ELEVENLABS_API_KEY` + `BRIGHT_ELEVENLABS_VOICE_ID`, recommended for reliability) → F5-TTS zero-shot clone via HuggingFace Spaces (`HF_TOKEN` recommended). No generic fallback voice.
 - **Deployment**: Cloudflare Pages
 
 ---
@@ -81,13 +84,14 @@ binding = "AI"
 │   ├── index.css        # Glassmorphism design system & all styles
 │   ├── main.tsx         # React entry point
 │   └── data/
-│       └── cvData.ts    # All CV data (projects, experience, certs, etc.)
+│       └── cvData.ts    # Single source of truth: CV, consulting offer, projects, certs (also feeds the chat Worker)
 ├── functions/
 │   └── api/
 │       ├── chat.ts      # Cloudflare Worker — Digital Twin chat + Job Matcher
-│       └── tts.ts       # Cloudflare Worker — Coqui XTTS-v2 voice cloning proxy
+│       └── tts.ts       # Cloudflare Worker — speaks only in Bright's cloned voice
 ├── public/
 │   ├── profile.png      # Profile photo
+│   ├── bright_voice_ref.wav # Reference sample for voice cloning
 │   └── favicon.svg      # Site favicon
 └── index.html           # HTML shell with SEO/OG meta tags
 ```

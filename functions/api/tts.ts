@@ -1,253 +1,127 @@
 // functions/api/tts.ts
 import { Client } from '@gradio/client';
-// ── Engine priority ─────────────────────────────────────────────────────────
-//  1. MisoTTS  — 7.7B backbone + 300M decoder, ~110ms latency, one-shot clone
-//               Open weights (MIT-adjacent). Set MISO_TTS_API_KEY to activate.
-//               Swap-in target: POST https://api.misotts.ai/v1/synthesize
-//  2. ElevenLabs Turbo v2.5 — current production engine (~1–3s, high fidelity)
-//  3. Web Speech API — client-side fallback (no server call)
+// ── Bright's voice only ─────────────────────────────────────────────────────
+// The Digital Twin must never speak in anyone else's voice. Both engines clone
+// Bright's real voice; if neither is available the client shows text only.
+//  1. ElevenLabs — Instant Voice Clone of Bright, created once from
+//     public/bright_voice_ref.wav. Active when BRIGHT_ELEVENLABS_VOICE_ID and
+//     ELEVENLABS_API_KEY are set. Fast and reliable.
+//  2. F5-TTS on Hugging Face — zero-shot clone from /bright_voice_ref.wav on
+//     every request. Free; set HF_TOKEN for a dedicated ZeroGPU quota.
 // ────────────────────────────────────────────────────────────────────────────
 
 interface Env {
   ELEVENLABS_API_KEY?: string;
-  MISO_TTS_API_KEY?: string;    // Set this once MisoTTS API ships — auto-activates
-  AI?: {
-    run: (model: string, options: Record<string, unknown>) => Promise<{ audio?: string } | unknown>;
-  };
+  BRIGHT_ELEVENLABS_VOICE_ID?: string;
+  HF_TOKEN?: string;
+  HF_API_KEY?: string;
 }
 
-// ── Default deep male voice ──────────────────────────────────────────────────
-// ElevenLabs voice_id — no recording needed, TTS works out of the box.
-// To use an African-accent voice: browse https://elevenlabs.io/voice-library
-//   → filter: Male · Deep · African / South African → copy voice_id below.
-// MisoTTS voice swap: replace this with the MisoTTS voice handle when API ships.
-const DEFAULT_VOICE_ID = 'f5_clone'; // Default to Bright's F5-TTS Voice
+// Transcription of public/bright_voice_ref.wav (F5-TTS reference text).
+const REF_TEXT = "if it's a five agent system which helps you forensic check and if it didn't manage issues it plays devil's advocate agents where they work against each other to cut friend the surface these issues so as long as there's a signal in the market";
+
+const MAX_CHARS = 500;
 
 function jsonResp(data: object, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
+    headers: { 'Content-Type': 'application/json' },
   });
 }
 
-export const onRequestOptions: PagesFunction = async () =>
-  new Response(null, {
-    status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
-  });
+function toBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let binary = '';
+  const chunkSize = 8192;
+  for (let i = 0; i < bytes.byteLength; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+  }
+  return btoa(binary);
+}
+
+// Strip markdown and cut at a sentence boundary so speech never stops mid-word.
+function toSpeech(text: string): string {
+  const plain = text
+    .split(/\n\s*\*\*\*\s*\n|###\s*Suggested Follow-up/i)[0]
+    .replace(/#{1,6}\s+/g, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/^\s*[-*]\s+/gm, '')
+    .replace(/^\s*\d+\.\s+/gm, '')
+    .replace(/\n{2,}/g, '. ')
+    .replace(/\n/g, ' ')
+    .trim();
+  if (plain.length <= MAX_CHARS) return plain;
+  const cut = plain.slice(0, MAX_CHARS);
+  const lastStop = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('! '), cut.lastIndexOf('? '));
+  return lastStop > 100 ? cut.slice(0, lastStop + 1) : cut;
+}
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
+  let body: { text?: string };
   try {
-    const body = await context.request.json() as {
-      text: string;
-      voiceId?: string;  // Optional — server uses DEFAULT_VOICE_ID if absent
-    };
+    body = await context.request.json();
+  } catch {
+    return jsonResp({ error: 'Invalid JSON body' }, 400);
+  }
+  if (!body.text?.trim()) {
+    return jsonResp({ error: 'text is required' }, 400);
+  }
+  const plain = toSpeech(body.text);
+  const { env } = context;
 
-    const { text, voiceId } = body;
-
-    if (!text?.trim()) {
-      return jsonResp({ error: 'text is required' }, 400);
-    }
-
-    // Strip markdown → clean speech
-    const plain = text
-      .replace(/#{1,6}\s+/g, '')
-      .replace(/\*\*([^*]+)\*\*/g, '$1')
-      .replace(/\*([^*]+)\*/g, '$1')
-      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-      .replace(/^\s*[-*]\s+/gm, '')
-      .replace(/^\s*\d+\.\s+/gm, '')
-      .replace(/\*\*\*/g, '.')
-      .replace(/---/g, '.')
-      .replace(/\n{2,}/g, '. ')
-      .replace(/\n/g, ' ')
-      .trim()
-      .slice(0, 500);
-
-    const effectiveVoiceId = voiceId || DEFAULT_VOICE_ID;
-
-    // ── Engine 1: MisoTTS ───────────────────────────────────────────────────
-    // Activates automatically when MISO_TTS_API_KEY is set in Cloudflare Pages.
-    // Architecture: 7.7B backbone (time) + 300M decoder (depth)
-    //               32 RVQ codebooks × 2,048-way vectors, ~110ms latency
-    //               One-shot voice clone from ~10s clip, MIT-adjacent license
-    if (context.env.MISO_TTS_API_KEY) {
-      try {
-        const controller = new AbortController();
-        const tid = setTimeout(() => controller.abort(), 15000);
-
-        // ── TODO: replace with confirmed MisoTTS endpoint when API ships ──
-        const misoRes = await fetch('https://api.misotts.ai/v1/synthesize', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${context.env.MISO_TTS_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            text: plain,
-            voice_id: effectiveVoiceId,
-            language: 'en',
-            // Emotive conditioning — MisoTTS conditions on prior audio context
-            style: 'professional',
-          }),
-          signal: controller.signal,
-        });
-
-        clearTimeout(tid);
-
-        if (misoRes.ok) {
-          const arrayBuffer = await misoRes.arrayBuffer();
-          const bytes = new Uint8Array(arrayBuffer);
-          let binary = '';
-          const chunkSize = 8192;
-          for (let i = 0; i < bytes.byteLength; i += chunkSize) {
-            binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
-          }
-          const audioData = `data:audio/mpeg;base64,${btoa(binary)}`;
-          return jsonResp({ audioData, provider: 'misotts' });
-        }
-        // Fall through to ElevenLabs if MisoTTS fails
-      } catch {
-        // MisoTTS unavailable — fall through to ElevenLabs
+  // ── Engine 1: ElevenLabs clone of Bright ─────────────────────────────────
+  if (env.ELEVENLABS_API_KEY && env.BRIGHT_ELEVENLABS_VOICE_ID) {
+    try {
+      const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${env.BRIGHT_ELEVENLABS_VOICE_ID}`, {
+        method: 'POST',
+        headers: {
+          'xi-api-key': env.ELEVENLABS_API_KEY,
+          'Content-Type': 'application/json',
+          'Accept': 'audio/mpeg',
+        },
+        body: JSON.stringify({
+          text: plain,
+          model_id: 'eleven_turbo_v2_5',
+          voice_settings: { stability: 0.6, similarity_boost: 0.9, style: 0.2, use_speaker_boost: true },
+        }),
+        signal: AbortSignal.timeout(20000),
+      });
+      if (res.ok) {
+        return jsonResp({ audioData: `data:audio/mpeg;base64,${toBase64(await res.arrayBuffer())}`, provider: 'elevenlabs-bright-clone' });
       }
+    } catch {
+      // Fall through to F5-TTS
     }
+  }
 
-    // ── Engine 2: ElevenLabs Turbo v2.5 ────────────────────────────────────
-    if (context.env.ELEVENLABS_API_KEY && effectiveVoiceId !== 'f5_clone') {
-      try {
-        const controller = new AbortController();
-        const tid = setTimeout(() => controller.abort(), 20000);
-
-        const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${effectiveVoiceId}`, {
-          method: 'POST',
-          headers: {
-            'xi-api-key': context.env.ELEVENLABS_API_KEY,
-            'Content-Type': 'application/json',
-            'Accept': 'audio/mpeg',
-          },
-          body: JSON.stringify({
-            text: plain,
-            model_id: 'eleven_turbo_v2_5',
-            voice_settings: {
-              stability: 0.60,         // Consistent authoritative tone
-              similarity_boost: 0.85,  // High fidelity to voice character
-              style: 0.25,             // Slight expressiveness for natural delivery
-              use_speaker_boost: true,
-            },
-          }),
-          signal: controller.signal,
-        });
-
-        clearTimeout(tid);
-
-        if (res.ok) {
-          // Convert binary MP3 → base64 data-URL (chunked to avoid call-stack overflow)
-          const arrayBuffer = await res.arrayBuffer();
-          const bytes = new Uint8Array(arrayBuffer);
-          let binary = '';
-          const chunkSize = 8192;
-          for (let i = 0; i < bytes.byteLength; i += chunkSize) {
-            binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
-          }
-          const audioData = `data:audio/mpeg;base64,${btoa(binary)}`;
-          return jsonResp({ audioData, provider: 'elevenlabs-turbo-v2.5' });
-        }
-      } catch {
-        // Fall through to MeloTTS if ElevenLabs fails or throws
-      }
+  // ── Engine 2: F5-TTS zero-shot clone of Bright ───────────────────────────
+  try {
+    const origin = new URL(context.request.url).origin;
+    const refRes = await fetch(`${origin}/bright_voice_ref.wav`);
+    if (!refRes.ok) {
+      return jsonResp({ error: `Reference voice file unavailable (${refRes.status})`, fallback: true }, 502);
     }
-
-    // ── Engine 3: F5-TTS on Hugging Face (Keyless Voice Clone) ──────────────
-    // Clones Bright's actual voice from /bright_voice_ref.wav without API keys!
-    if (effectiveVoiceId === 'f5_clone' || !context.env.ELEVENLABS_API_KEY) {
-      try {
-        const origin = new URL(context.request.url).origin;
-        const audioUrl = `${origin}/bright_voice_ref.wav`;
-        const audioRes = await fetch(audioUrl);
-        if (audioRes.ok) {
-          const audioBlob = await audioRes.blob();
-          const hfToken = context.env.HF_TOKEN || context.env.HF_API_KEY;
-          const app = await Client.connect('mrfakename/E2-F5-TTS', hfToken ? { token: hfToken } : undefined);
-          const refText = "if it's a five agent system which helps you forensic check and if it didn't manage issues it plays devil's advocate agents where they work against each other to cut friend the surface these issues so as long as there's a signal in the market";
-          const result = await app.predict('/predict', [
-            audioBlob, // ref_audio
-            refText, // ref_text (transcription of bright_voice_ref.wav)
-            plain, // gen_text
-            false, // remove_silence
-          ]);
-
-          if (result && result.data && result.data[0]) {
-            const fileInfo = result.data[0] as { url: string };
-            const soundRes = await fetch(fileInfo.url);
-            if (soundRes.ok) {
-              const arrayBuffer = await soundRes.arrayBuffer();
-              const bytes = new Uint8Array(arrayBuffer);
-              let binary = '';
-              const chunkSize = 8192;
-              for (let i = 0; i < bytes.byteLength; i += chunkSize) {
-                binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
-              }
-              const audioData = `data:audio/wav;base64,${btoa(binary)}`;
-              return jsonResp({ audioData, provider: 'huggingface-f5tts' });
-            } else {
-              return jsonResp({ error: `Failed to fetch generated audio from HF: ${soundRes.status} ${soundRes.statusText}` }, 500);
-            }
-          } else {
-            return jsonResp({ error: "F5-TTS response did not contain expected audio data" }, 500);
-          }
-        } else {
-          return jsonResp({ error: `Failed to fetch local reference audio: ${audioRes.status} ${audioRes.statusText} URL: ${audioUrl}` }, 500);
-        }
-      } catch (err: unknown) {
-        const errMsg = err instanceof Error 
-          ? `${err.name}: ${err.message}\nStack: ${err.stack}` 
-          : typeof err === 'object' && err !== null
-            ? JSON.stringify(err)
-            : String(err);
-        console.error('F5-TTS Error:', errMsg);
-        
-        let userError = `F5-TTS Exception: ${errMsg}`;
-        if (errMsg.includes('ZeroGPU') || errMsg.includes('quota') || errMsg.includes('quota exceeded') || errMsg.includes('exceeded your ZeroGPU')) {
-          userError = "Hugging Face ZeroGPU quota exceeded. Because Cloudflare Edge servers share IP addresses, you must add a free Hugging Face User Access Token (HF_TOKEN) to your Cloudflare Pages Environment Variables to get a dedicated voice cloning quota. Register and get a free token at https://huggingface.co/settings/tokens.";
-        }
-        
-        return jsonResp({ error: userError, fallback: true }, 500);
-      }
+    const hfToken = env.HF_TOKEN || env.HF_API_KEY;
+    const app = await Client.connect('mrfakename/E2-F5-TTS', hfToken ? { token: hfToken as `hf_${string}` } : undefined);
+    const result = await app.predict('/predict', [await refRes.blob(), REF_TEXT, plain, false]);
+    const fileInfo = (result?.data as { url?: string }[] | undefined)?.[0];
+    if (!fileInfo?.url) {
+      return jsonResp({ error: 'Voice clone returned no audio', fallback: true }, 502);
     }
-
-    // ── Engine 4: Cloudflare Workers AI MeloTTS ─────────────────────────────
-    // Keyless server-side fallback running directly on Cloudflare Edge GPUs
-    if (context.env.AI) {
-      try {
-        const result = await context.env.AI.run('@cf/myshell-ai/melotts', {
-          prompt: plain,
-          lang: 'en',
-        });
-
-        if (result && result.audio) {
-          const audioData = `data:audio/mpeg;base64,${result.audio}`;
-          return jsonResp({ audioData, provider: 'cloudflare-melotts' });
-        }
-      } catch {
-        // Fall through to error
-      }
+    const soundRes = await fetch(fileInfo.url);
+    if (!soundRes.ok) {
+      return jsonResp({ error: `Voice clone audio fetch failed (${soundRes.status})`, fallback: true }, 502);
     }
-
-    return jsonResp({ error: 'No TTS API key configured and Cloudflare Workers AI is unavailable', fallback: true }, 503);
-
+    return jsonResp({ audioData: `data:audio/wav;base64,${toBase64(await soundRes.arrayBuffer())}`, provider: 'huggingface-f5tts' });
   } catch (err: unknown) {
-    const errorName = err instanceof Error ? err.name : '';
-    const errorMessage = err instanceof Error ? err.message : 'Internal error';
-    if (errorName === 'AbortError') {
-      return jsonResp({ error: 'TTS request timed out', fallback: true }, 504);
-    }
-    return jsonResp({ error: errorMessage, fallback: true }, 500);
+    const msg = err instanceof Error ? err.message : typeof err === 'object' ? JSON.stringify(err) : String(err);
+    console.error('F5-TTS error:', msg);
+    const quota = /zerogpu|quota/i.test(msg);
+    return jsonResp({
+      error: quota ? 'Voice clone quota exceeded — set HF_TOKEN or BRIGHT_ELEVENLABS_VOICE_ID in Cloudflare Pages.' : 'Voice clone unavailable',
+      fallback: true,
+    }, 503);
   }
 };

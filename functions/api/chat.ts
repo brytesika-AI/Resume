@@ -1,6 +1,10 @@
 import { cvData } from '../../src/data/cvData';
 
+// Workers AI chat model. Override with the CHAT_MODEL env var when Cloudflare retires a model.
+const DEFAULT_CHAT_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+
 interface Env {
+  CHAT_MODEL?: string;
   AI: {
     run: (model: string, options: Record<string, unknown>) => Promise<unknown>;
   };
@@ -57,6 +61,9 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     if (message.startsWith('__ANALYZE_JOB__:')) {
       selectedTool = 'Job_Spec_Evaluator_Tool';
       datasource = 'Job Specification Input';
+    } else if (/\b(consult\w*|hire you|engagement|retainer|my business|our business|my company|our company|raffle house|services?)\b/.test(lowerMessage)) {
+      selectedTool = 'Consulting_Offer_Tool';
+      datasource = 'cvData.consulting';
     } else if (lowerMessage.includes('hobb') || lowerMessage.includes('interest')) {
       selectedTool = 'Hobbies_Database_Tool';
       datasource = 'cvData.hobbies';
@@ -79,7 +86,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       `[ADK Execution] Querying data context from ${datasource}...`,
       `[ADK Guardrails] Enforcing strict safety constraints (Politics, Safety, POPIA)`,
       `[ADK Guardrails] Safety checks complete: Pass (0 violations detected)`,
-      `[ADK Synthesizer] Invoking Llama-3.1 edge runtime in first-person voice...`
+      `[ADK Synthesizer] Invoking Workers AI edge runtime in first-person voice...`
     ];
 
     // Build base CV context string for the LLM
@@ -93,14 +100,30 @@ LinkedIn: ${cvData.personalInfo.linkedin}
 GitHub: ${cvData.personalInfo.github}
 Summary: ${cvData.personalInfo.summary}
 
+CONSULTING PRACTICE (${cvData.consulting.practice}):
+Headline: ${cvData.consulting.headline}
+Pitch: ${cvData.consulting.pitch}
+Services:
+${cvData.consulting.services.map(s => `- ${s.name}: ${s.outcome} Deliverables: ${s.deliverables}`).join('\n')}
+Case studies:
+${cvData.consulting.caseStudies.map(c => `- ${c.client}. Context: ${c.context} Result: ${c.result}`).join('\n')}
+Engagement models:
+${cvData.consulting.engagementModels.map(m => `- ${m}`).join('\n')}
+How to engage: email ${cvData.personalInfo.email} or use the "Work With Me" tab to book a discovery call.
+
 COMPETENCIES:
 ${cvData.competencies.map(c => `- ${c}`).join('\n')}
 
-PORTFOLIO OF LIVE PRODUCTS:
+PORTFOLIO OF WORKING PROJECTS & PRODUCTS:
 ${cvData.projects.map(p => `
 * Title: ${p.title}
+  Status: ${p.status || 'Prototype'}
+  Client: ${p.client || 'N/A'}
+  Period: ${p.period || 'N/A'}
   Sector: ${p.sector}
   Description: ${p.description}
+  Key Outcomes / Results:
+${(p.outcomes || []).map(o => `  - ${o}`).join('\n')}
   Tech Stack: ${p.techStack.join(', ')}
   Live URL: ${p.liveUrl}
   GitHub: ${p.github}
@@ -181,7 +204,7 @@ Your output MUST be a JSON object, with no markdown wrappers or conversational i
 Ensure the JSON is valid. If there is a parse error, the app will break, so output ONLY valid raw JSON.`;
 
       if (context.env && context.env.AI) {
-        const response = (await context.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+        const response = (await context.env.AI.run(context.env.CHAT_MODEL || DEFAULT_CHAT_MODEL, {
           messages: [
             { role: 'system', content: 'You are a JSON-only response engine representing Bright C. Sikazwe.' },
             { role: 'user', content: jobSpecPrompt }
@@ -252,15 +275,17 @@ ${cvContext}
 === END OF AUTHORITATIVE CV CONTEXT ===
 
 CRITICAL RULES & GUARDRAILS:
-1. ANTI-HALLUCINATION: Every metric, company name, tech stack item, project name, date, and figure you mention MUST appear in the CV CONTEXT above. If it is not there, do not say it.
-2. STRICT BOUNDARY: Only answer questions about my professional background, my 8 live products, my PhD research, my work at MultiChoice Group, my certifications, and my LinkedIn posts.
+1. ANTI-HALLUCINATION & OCTOBER 2026 FIGURES: Every metric, company name, tech stack item, project name, date, and figure you mention MUST appear in the CV CONTEXT above. Strictly use the October 2026 figures (e.g., Raffle House: £23.9m all-time revenue, 1.38m orders, 81.7k subscriptions, 24 automated nightly checks, 30% buyers' channels corrected with organic social 34% → 2.7%, £49k/month churn risk, 16.5% forecast error, ~£56k/month failed payments). Do NOT invent figures or use unverified legacy figures such as "11.8×" or "<1% → 36%". Never quote prices or rates.
+2. STRICT BOUNDARY: Only answer questions about my professional background, my consulting practice and services, my ${cvData.projects.length} portfolio products, my PhD research, my work at MultiChoice Group, my certifications, and my LinkedIn posts.
+2b. CONSULTING ENQUIRIES: If the visitor describes a business problem or asks about hiring me as a consultant, map their problem to the most relevant service and case study from the CONSULTING PRACTICE section, suggest the engagement model that fits, and close by inviting them to email ${cvData.personalInfo.email} or use the "Work With Me" tab to book a discovery call. Never quote prices, rates, or availability dates.
+2c. PRIORITIZATION RULE: When asked about projects, delivery, systems, or client work (such as "What have you delivered for clients?"), ALWAYS lead with client engagements (such as Raffle House) and live production systems (such as the Technical Calls Intelligence Platform, Five-Agent Incident Triage, FSU/CCA Fleet Upgrade, EPL Viewer Cohorts, and Enterprise Telemetry Platform) BEFORE prototypes or research artifacts. Never quote prices.
 3. STRICT POLITICAL GUARDRAIL: Do not express political opinions or take political sides. The ONLY exception is explaining the TECHNICAL architecture of the "SentimentCommand Election Intelligence" project.
 4. STRICT PRIVATE LIFE & SAFETY GUARDRAIL: Do not engage in discussions about my private life, relationships, or inappropriate topics.
 5. Speak naturally, authoritatively, and humbly. Indicate links to github.com/brytesika-AI and linkedin.com/in/brytesika when relevant.
 6. NO IDENTITY PREFIXES: Never prefix your response with "Digital Twin", "* Digital Twin", or any similar label. Start directly with your first-person reply.`;
 
     if (context.env && context.env.AI) {
-      const response = (await context.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+      const response = (await context.env.AI.run(context.env.CHAT_MODEL || DEFAULT_CHAT_MODEL, {
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: message }
