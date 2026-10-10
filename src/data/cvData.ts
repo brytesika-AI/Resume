@@ -6,6 +6,10 @@ export interface Project {
   github: string;
   sector: string;
   techStack: string[];
+  status?: "Live in production" | "Client engagement" | "Delivered" | "Prototype";
+  client?: string;
+  period?: string;
+  outcomes?: string[];
 }
 
 export interface WorkExperience {
@@ -75,58 +79,70 @@ export interface CVData {
 export const cvData: CVData = {
   personalInfo: {
     name: "Bright C. Sikazwe",
-    title: "Executive AI, Data & Digital Leader  •  Enterprise Strategy  •  Responsible AI Governance  •  Value Realisation",
+    title: "Fractional Head of Data & AI | Growth Analytics · AI Agents · Data Platforms",
     subtitle: "Founder & Principal, brytesika-AI  •  Acting Principal Engineer, MultiChoice Group (a Canal+ company)",
     location: "Johannesburg, South Africa",
     email: "Bryte.sika@gmail.com",
     linkedin: "https://www.linkedin.com/in/brytesika/",
     github: "https://github.com/brytesika-AI",
     credly: "https://www.credly.com/users/bright-sikazwe",
-    summary: "AI, data and digital leader with seventeen years turning enterprise data into measurable business value — eleven at MultiChoice Group (a Canal+ company), progressing through four roles to Acting Principal, leading the data and AI capability for a ~20-million-subscriber business across 46 markets. I translate business priorities into scalable capability: enterprise data and AI architecture, platform standards and governance, production AI delivering quantified outcomes, and the responsible-AI discipline that makes autonomous decisioning trustworthy. Founder & Principal of brytesika-AI, an independent applied-AI practice — most recently rebuilding a UK subscription business's analytics platform into a trusted single source of truth in one month. Doctoral researcher (University of Johannesburg) in ethical and responsible AI for strategic decision-making. Certified across Google Cloud, Azure, and the agent-engineering and Responsible AI stacks; three years of regulated banking."
+    summary: "I help growing businesses stop arguing about their numbers and start acting on them. I join remotely, find where the data and the decisions are out of step, and ship working systems within weeks: a tested data warehouse, direct marketing feeds, machine-learning models in production, and executive reports leaders actually use to decide spend, pricing and retention. I deliver as one senior person directing a small team of AI agents under strict guardrails — read-only by default, cost-capped, additive changes only, human approval before anything reaches people — so clients get a consulting team's output at a contractor's cost, with an audit trail. Seventeen years in data and AI, eleven of them leading platforms for a ~20M-subscriber, 46-market business at MultiChoice Group (a Canal+ company). Based in Johannesburg, working remotely with clients in the US, UK, Europe and the Middle East: full overlap with UK and EU hours, and mornings for US East."
   },
   consulting: {
-    practice: "brytesika-AI — independent applied-AI & data practice",
-    headline: "From person-dependent reporting to a trusted, automated, AI-ready data platform — in weeks, not quarters.",
-    pitch: "I work with founders, CEOs and data leaders who need numbers they can trust and AI that pays for itself. I bring enterprise-scale experience (a ~20M-subscriber, 46-market business) to focused, fixed-scope engagements: I architect the platform, ship the board, and leave behind tested, company-owned assets and a governance standard your team can run without me.",
+    practice: "brytesika-AI — independent data & AI consultancy",
+    headline: "Fractional Head of Data & AI",
+    pitch: "I help growing businesses stop arguing about their numbers and start acting on them. I join remotely, find where the data and decisions are out of step, and ship working systems within weeks: a tested data warehouse, direct marketing feeds, machine-learning models in production, and executive reports leaders actually use to decide spend, pricing and retention.",
     services: [
       {
-        name: "Analytics Platform Rescue & Single Source of Truth",
-        outcome: "Numbers leadership trusts — reconciled to source, refreshed automatically, owned by the company.",
-        deliverables: "Warehouse rebuild (BigQuery / Azure / Databricks), automated data-quality tests, company-owned service accounts, data-validity register with sign-off."
+        name: "Data Foundation Sprint (4–6 weeks)",
+        outcome: "A reconciled warehouse matching source to the penny.",
+        deliverables: "Reconciled warehouse (BigQuery, Fabric or Databricks), direct feeds from Meta, Google Ads, GA4, Klaviyo and payments, and nightly checks that match the source to the penny."
       },
       {
-        name: "Growth & Marketing Analytics",
-        outcome: "Truthful CAC, ROAS, LTV and attribution so spend decisions are made on real numbers.",
-        deliverables: "Direct ad-platform pipelines (e.g. Meta Marketing API), GA4 fixes, cohort LTV and payback models, a daily Growth Board with risk register and budget step-up model."
+        name: "Marketing Truth Fix (2–3 weeks)",
+        outcome: "True CAC, ROAS and channel attribution without agency misfiling.",
+        deliverables: "Find where GA4 and agency tagging misfile buyers; a rules engine that restates channels nightly; VAT-correct cost per new customer and payback by channel."
       },
       {
-        name: "AI Strategy & Responsible-AI Governance",
-        outcome: "An AI roadmap tied to measurable value, with governance that makes autonomous decisioning safe to scale.",
-        deliverables: "Use-case prioritisation, investment roadmap with success measures and pre-mortems, Build→Secure→Evaluate→Ship lifecycle, POPIA/PII controls."
+        name: "Retention & Churn Model (3–4 weeks)",
+        outcome: "Calibrated churn scoring and commercial levers sized in your currency.",
+        deliverables: "Calibrated churn scoring, value at risk, and the payment and renewal levers sized in your currency."
       },
       {
-        name: "Production AI & Agentic Automation",
-        outcome: "AI that leaves the pilot stage and runs in operations.",
-        deliverables: "Multi-agent classification and triage pipelines, LLM/RAG assistants, evaluation harnesses, human-in-the-loop guardrails (read-only default, dry-run first, human approval)."
+        name: "AI Agents for Operations (4–8 weeks)",
+        outcome: "Production agents with human approval, evaluation and cost limits.",
+        deliverables: "Agents that monitor, classify, triage and draft — with human approval, evaluation and cost limits designed in."
+      },
+      {
+        name: "Fractional Head of Data (ongoing)",
+        outcome: "2–3 days a month senior data & AI leadership.",
+        deliverables: "Roadmap, executive reporting, agency oversight, data governance and hiring support."
+      },
+      {
+        name: "Data & AI Health Check (1 week)",
+        outcome: "Fixed-price diagnostic: what to trust, what to fix, what to build, and what it will cost.",
+        deliverables: "Diagnostic report: what to trust, what to fix, what to build, and what it will cost."
       }
     ],
     caseStudies: [
       {
-        client: "Raffle House (UK subscription business — £23.4m revenue, 1.35m orders, 81k subscriptions)",
-        context: "Manual, person-dependent reporting; a planned paid connector; GA4 double-counting purchases; marketing spend judged on untrustworthy CAC/ROAS.",
-        result: "In one month: rebuilt the analytics platform on BigQuery, validated nightly by 23 automated data-quality tests matching source to the penny; replaced a planned paid tool with a direct Meta Marketing API pipeline reconciled within 5p a day; fixed GA4 purchase double-counting (11.8× inflated → within 1%); lifted attributable revenue from under 1% to ~36%; made CAC/ROAS VAT-correct (~20% truer); shipped a daily company-wide Growth Board and a 15-initiative growth roadmap — showing cost per new customer falling ~£47 → £28 year on year on ~45% less paid spend."
+        client: "Raffle House — UK prize-draw and subscription business (~£9m revenue)",
+        context: "Move from manual, person-dependent reporting to an automated, tested analytics platform leadership trusts. Direct work with founders, COO, CMO and agencies.",
+        result: "Rebuilt BigQuery warehouse alongside production: £23.9m revenue, 1.38m orders, 81.7k subscriptions; 24 automated nightly checks matching source to penny. Direct Meta, Klaviyo, Google Ads and GA4 feeds on Cloud Run at no tool cost. Channel rules engine corrected 30% of buyers' channels (34% → 2.7% organic; recovered 10,400 email buyers). Calibrated churn model sizing ~£49k/mo likely to lapse; forecast at 16.5% error. Sized ~£56k/mo in failed payments; VAT-correct CAC; seven executive reports running for pennies a day."
       },
       {
-        client: "MultiChoice Group (a Canal+ company) — enterprise scale",
-        context: "A 46-market, ~20M-subscriber business running a 14-million-device transformation programme.",
-        result: "Executive analytics platform (Azure Data Lake → Fabric → Power BI, Databricks) used by senior VP leadership as the single source of truth; Secure Core analytics cut a critical device-integrity exposure from 52% to under 1% of fleet; a validated 489,425-smartcard AI segmentation adopted cross-border with Canal+."
+        client: "MultiChoice Group (a Canal+ company) — enterprise data & AI leadership",
+        context: "Enterprise data & AI leadership for a ~20M-subscriber, 46-market business running a 14-million-device transformation programme.",
+        result: "Led the Technical Calls Intelligence Platform (140,798 calls, 12 value streams, migrated from Microsoft Fabric to AWS, live) and five-agent incident-triage pipeline. Guided fix for ~1.4M devices; cut security exposure from 52% to under 1%."
       }
     ],
     engagementModels: [
-      "Diagnostic sprint (2 weeks) — data & AI health check, risk register and prioritised roadmap.",
-      "Fixed-scope build (4–6 weeks) — platform rebuild, Growth Board or production AI pipeline, handed over tested and documented.",
-      "Fractional data & AI leadership — ongoing advisory retainer for founders and executive teams.",
-      "Remote-first, working with clients in South Africa, the UK and across Africa."
+      "Data Foundation Sprint (4–6 weeks) — warehouse, direct feeds, nightly penny-level reconciliation.",
+      "Marketing Truth Fix (2–3 weeks) — channel attribution cleanup, rules engine, VAT-correct CAC.",
+      "Retention & Churn Model (3–4 weeks) — calibrated ML scoring, value at risk, payment levers.",
+      "AI Agents for Operations (4–8 weeks) — monitoring, triage, classification with human-in-the-loop guardrails.",
+      "Fractional Head of Data (ongoing) — 2–3 days a month roadmap, reporting, governance & hiring.",
+      "Data & AI Health Check (1 week) — fixed-price diagnostic on trust, fixes, builds and costs."
     ],
     cta: {
       label: "Book a discovery call",
@@ -141,6 +157,24 @@ export const cvData: CVData = {
     "Workforce Enablement & Stakeholder Partnership — build data/AI literacy and standards consumed by teams of engineers; mentor analysts and engineers; partner directly with CEOs, senior VPs and business leaders on commercial value."
   ],
   projects: [
+    {
+      id: "raffle-house",
+      title: "Raffle House | Growth Analytics & ML Platform",
+      description: "UK subscription brand (~£9m). Six weeks: tested BigQuery warehouse (24 nightly checks), direct Meta/Klaviyo/Google Ads/GA4 feeds, channel engine correcting 30% of buyers' channels (34% → 2.7% organic), calibrated churn model (~£49k/month at risk), forecast at 16.5% error, seven executive reports, all running for pennies a day.",
+      liveUrl: "#",
+      github: "https://github.com/brytesika-AI",
+      sector: "Growth & Commerce",
+      techStack: ["BigQuery", "BigQuery ML", "Cloud Run", "Secret Manager", "GA4", "Meta Marketing API", "Klaviyo", "Google Ads", "Claude MCP"],
+      status: "Client engagement",
+      client: "Raffle House",
+      period: "Sept 2026 – present",
+      outcomes: [
+        "Rebuilt BigQuery warehouse alongside production: £23.9m all-time revenue, 1.38m orders, 81.7k subscriptions; 24 automated checks matching source to penny.",
+        "Direct Meta, Klaviyo, Google Ads and GA4 feeds on Cloud Run with secrets in Secret Manager at no tool cost.",
+        "Channel rules engine corrected 30% of buyers' channels: GA4 showed organic social at 34%, true was 2.7%; recovered 10,400 email buyers filed as 'Unassigned'.",
+        "Calibrated churn model (2.9× lift in riskiest 10%; held on unseen month) sizing ~£49k/month likely to lapse; forecast back-tested at 16.5% error (vs 24% baseline)."
+      ]
+    },
     {
       id: "strategylab-ai",
       title: "StrategyLab AI | McKinsey-Grade Business Strategy Decision Engine",
@@ -379,14 +413,15 @@ export const cvData: CVData = {
   experience: [
     {
       role: "Founder & Principal — Independent Data & AI Consultant",
-      company: "brytesika-AI (independent applied-AI practice)",
-      location: "Johannesburg, South Africa (remote, UK & Africa clients)",
+      company: "brytesika-AI (independent data & AI consultancy)",
+      location: "Johannesburg, South Africa (remote, UK, US & Africa clients)",
       date: "2025 – Present",
       bullets: [
-        "**[CONSULTING — RAFFLE HOUSE, UK]** Stood up a trusted enterprise data capability in one month for a UK subscription business (£23.4m revenue, 1.35m orders, 81k subscriptions): rebuilt the analytics platform as a BigQuery star-schema warehouse validated nightly by 23 automated data-quality tests matching source to the penny; removed single-person dependency via a company-owned service account.",
-        "**[CONSULTING — RAFFLE HOUSE, UK]** Replaced a planned paid tool with a direct Meta Marketing API pipeline (Secret Manager, idempotent loads, reconciled within 5p a day); fixed GA4 purchase double-counting (11.8× inflated → within 1% of real checkouts); lifted attributable revenue from under 1% to ~36%; made CAC/ROAS VAT-correct (~20% truer).",
-        "**[CONSULTING — RAFFLE HOUSE, UK]** Shipped a company-wide Growth Board refreshed daily — with a risk register and budget step-up model — and a 15-initiative growth roadmap with success measures, pre-mortems and review triggers; showed cost per new customer falling ~£47 → £28 year on year on ~45% less paid spend.",
-        "**[APPLIED-AI PORTFOLIO]** Founder of a multi-vertical applied-AI portfolio (agriculture, health, minerals, fintech, enterprise) governed by a published responsible-AI standard (Build→Secure→Evaluate→Ship); 20+ public repositories at github.com/brytesika-AI."
+        "Data, analytics and AI engagements for clients in the UK and Africa, including Raffle House; ~10 production AI systems; 18+ public repositories at github.com/brytesika-AI.",
+        "**[RAFFLE HOUSE]** Rebuilt the BigQuery warehouse alongside production: £23.9m all-time revenue, 1.38m orders, 81.7k subscriptions; 24 automated checks every morning matching source to the penny. Direct Meta, Klaviyo, Google Ads and GA4 feeds on Cloud Run with secrets in Secret Manager at no tool cost.",
+        "**[MARKETING TRUTH]** Channel rules engine corrected 30% of buyers' channels: GA4 showed organic social at 34% of buyers; true figure was 2.7%. Recovered 10,400 email buyers filed as 'Unassigned'.",
+        "**[MACHINE LEARNING]** Calibrated churn model (2.9× lift in riskiest 10%; held up on unseen month) sizing ~£49k a month likely to lapse; caught raw probabilities overstated more than four times. New-customer forecast back-tested at 16.5% error against 24% for baseline.",
+        "**[COMMERCIAL IMPACT]** Sized ~£56k a month in failed or unapproved payments; made paid efficiency VAT-correct; seven executive reports with scenario planner for price, retention and spend running for pennies a day."
       ]
     },
     {
@@ -505,18 +540,20 @@ export const cvData: CVData = {
   ],
   certifications: [
     {
-      category: "Cloud & Data (certified)",
+      category: "Professional Certifications (2026)",
       items: [
-        "Google Cloud Professional Data Engineer (2026)",
+        "AWS Certified AI Business Strategist (Oct 2026)",
+        "Google Cloud Professional Data Engineer (Sept 2026)",
         "Microsoft Certified Azure Data Engineer Associate (DP-203)",
         "Microsoft Certified Fabric Analytics Engineer Associate (DP-600)",
         "Microsoft Certified Power BI Data Analyst Associate (PL-300)",
         "Oracle Cloud Infrastructure Generative AI Professional",
-        "Microsoft Certified Azure Fundamentals (AZ-900)"
+        "Anthropic — Claude API, MCP, Agent Skills",
+        "In progress: GCP Professional Cloud Architect; AWS Data Engineer; AWS Generative AI Developer Professional"
       ]
     },
     {
-      category: "AI, Agents & Responsible AI (certified)",
+      category: "AI, Agents & Responsible AI",
       items: [
         "Google Cloud AI-agent path — Agent Development Kit (ADK), A2A protocol, Model Context Protocol (MCP), Agent Engine, multi-agent orchestration",
         "Google Responsible AI series — Fairness & Bias; Interpretability & Transparency; Privacy & Safety",
@@ -546,7 +583,6 @@ export const cvData: CVData = {
       category: "In Progress",
       items: [
         "Google Cloud Professional Cloud Architect",
-        "AWS AI Business Strategist",
         "AWS Data Engineer Associate",
         "AWS Generative AI Developer Professional",
         "Full transcripts: credly.com/users/bright-sikazwe"

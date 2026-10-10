@@ -47,11 +47,11 @@ export default function App() {
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: 'agent',
-      text: `Hello! I'm Bright C. Sikazwe — Executive AI, Data & Digital Leader, Founder of the brytesika-AI consulting practice, and Acting Principal Engineer at MultiChoice Group (a Canal+ company). Welcome to my AI Digital Twin.
+      text: `Hello! I'm Bright C. Sikazwe — Fractional Head of Data & AI, Founder of brytesika-AI, and Acting Principal Engineer at MultiChoice Group (a Canal+ company). Welcome to my AI Digital Twin.
 
-Ask me about my 17 years in AI, data platforms and executive analytics, my independent consulting work through brytesika-AI, or my PhD research on the AI-SRF framework at the University of Johannesburg.
+Ask me about my 17 years in AI, data platforms and executive analytics, my recent client results (like rebuilding Raffle House's growth analytics warehouse in six weeks), or my PhD research on the AI-SRF framework at the University of Johannesburg.
 
-Hiring for a role? Paste the job specification in the 'Job Matcher' tab. Looking for a consultant? Open 'Work With Me' to see how I help businesses build trusted data platforms and AI that pays for itself.`
+Hiring for a role? Paste the job specification in the 'Job Matcher' tab. Looking for a consultant? Open 'Work With Me' to see my fixed-scope sprint offers and client outcomes.`
     }
   ]);
   
@@ -526,7 +526,7 @@ What would you like to explore?
       setLogs(prev => [
         ...prev,
         { type: 'agent-log', text: '[ADK Tool: Job_Spec_Evaluator_Tool] Loading CV context & aligning weights...' },
-        { type: 'agent-log', text: '[ADK Tool: Job_Spec_Evaluator_Tool] Evaluating requirements against 10+ years experience...' }
+        { type: 'agent-log', text: '[ADK Tool: Job_Spec_Evaluator_Tool] Evaluating requirements against 17 years experience...' }
       ]);
     }, 400);
 
@@ -1254,7 +1254,7 @@ With 17 years spanning enterprise AI strategy, C-suite analytics, and production
                   AI Job Spec Suitability Matcher
                 </h4>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.4', wordBreak: 'break-word' }}>
-                  Paste a job description or spec details below. My AI twin will run a matching evaluation against my 10+ years of production experience and academic research.
+                  Paste a job description or spec details below. My AI twin will run a matching evaluation against my 17 years of production experience and academic research.
                 </p>
                 
                 <textarea
