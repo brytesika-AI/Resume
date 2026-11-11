@@ -86,12 +86,12 @@ export const cvData: CVData = {
     linkedin: "https://www.linkedin.com/in/brytesika/",
     github: "https://github.com/brytesika-AI",
     credly: "https://www.credly.com/users/bright-sikazwe",
-    summary: "I help growing businesses stop arguing about their numbers and start acting on them. I join remotely, find where the data and the decisions are out of step, and ship working systems within weeks: a tested data warehouse, direct marketing feeds, machine-learning models in production, and executive reports leaders actually use to decide spend, pricing and retention. I deliver as one senior person directing a small team of AI agents under strict guardrails — read-only by default, cost-capped, additive changes only, human approval before anything reaches people — so clients get a consulting team's output at a contractor's cost, with an audit trail. Seventeen years in data and AI, eleven of them leading platforms for a ~20M-subscriber, 46-market business at MultiChoice Group (a Canal+ company). Based in Johannesburg, working remotely with clients in the US, UK, Europe and the Middle East: full overlap with UK and EU hours, and mornings for US East."
+    summary: "I help growing businesses stop arguing about their numbers and start acting on them — and I leave behind working systems, not slide decks. I join remotely, find where the data and the decisions are out of step, and ship working systems within weeks: a tested data warehouse, direct marketing feeds, machine-learning models in production, and executive reports leaders actually use to decide spend, pricing and retention. I deliver as one senior person directing a small team of AI agents under strict guardrails — read-only by default, cost-capped, additive changes only, human approval before anything reaches people — so clients get a consulting team's output at a contractor's cost, with an audit trail. Seventeen years in data and AI, eleven of them leading platforms for a ~20M-subscriber, 46-market business at MultiChoice Group (a Canal+ company). Based in Johannesburg, working remotely with clients in the US, UK, Europe and the Middle East: full overlap with UK and EU hours, and mornings for US East."
   },
   consulting: {
     practice: "brytesika-AI — independent data & AI consultancy",
     headline: "Fractional Head of Data & AI",
-    pitch: "I help growing businesses stop arguing about their numbers and start acting on them. I join remotely, find where the data and decisions are out of step, and ship working systems within weeks: a tested data warehouse, direct marketing feeds, machine-learning models in production, and executive reports leaders actually use to decide spend, pricing and retention.",
+    pitch: "I help growing businesses stop arguing about their numbers and start acting on them — and I leave behind working systems, not slide decks. I join remotely, find where the data and decisions are out of step, and ship working systems within weeks: a tested data warehouse, direct marketing feeds, machine-learning models in production, and executive reports leaders actually use to decide spend, pricing and retention.",
     services: [
       {
         name: "Data Foundation Sprint (4–6 weeks)",
@@ -114,6 +114,11 @@ export const cvData: CVData = {
         deliverables: "Agents that monitor, classify, triage and draft — with human approval, evaluation and cost limits designed in."
       },
       {
+        name: "BigQuery for AI Agents (2–3 weeks)",
+        outcome: "A warehouse your AI agents can query without picking the wrong table.",
+        deliverables: "Raw → clean → business-ready layers, calculated fields defined once, a documentation and naming standard agents can rely on, freshness and discrepancy checks, and a side-by-side migration plan."
+      },
+      {
         name: "Fractional Head of Data (ongoing)",
         outcome: "2–3 days a month senior data & AI leadership.",
         deliverables: "Roadmap, executive reporting, agency oversight, data governance and hiring support."
@@ -128,7 +133,7 @@ export const cvData: CVData = {
       {
         client: "Raffle House — UK prize-draw and subscription business (~£9m revenue)",
         context: "Move from manual, person-dependent reporting to an automated, tested analytics platform leadership trusts. Direct work with founders, COO, CMO and agencies.",
-        result: "Rebuilt BigQuery warehouse alongside production: £23.9m revenue, 1.38m orders, 81.7k subscriptions; 24 automated nightly checks matching source to penny. Direct Meta, Klaviyo, Google Ads and GA4 feeds on Cloud Run at no tool cost. Channel rules engine corrected 30% of buyers' channels (34% → 2.7% organic; recovered 10,400 email buyers). Calibrated churn model sizing ~£49k/mo likely to lapse; forecast at 16.5% error. Sized ~£56k/mo in failed payments; VAT-correct CAC; seven executive reports running for pennies a day."
+        result: "Rebuilt BigQuery warehouse alongside production: £23.9m revenue, 1.38m orders, 81.7k subscriptions; a 49-test nightly quality gate matching source to the penny. Direct Meta, Klaviyo, Google Ads and GA4 feeds on Cloud Run at no tool cost. Channel rules engine corrected 30% of buyers' channels (34% → 2.7% organic; recovered 10,400 email buyers). Calibrated churn model sizing ~£49k/mo likely to lapse; forecast at 16.5% error. Sized ~£56k/mo in failed payments; VAT-correct CAC; seven executive reports. Since then: 33 overlapping reporting objects consolidated to 14 with 217 legacy metrics mapped and none lost; revenue with a known marketing channel lifted from 0.9% to about 22%; a regulated prize-claim portal built on Google Cloud in place of an agency proposal; the whole warehouse runs for under £1 a month in queries."
       },
       {
         client: "MultiChoice Group (a Canal+ company) — enterprise data & AI leadership",
@@ -141,6 +146,7 @@ export const cvData: CVData = {
       "Marketing Truth Fix (2–3 weeks) — channel attribution cleanup, rules engine, VAT-correct CAC.",
       "Retention & Churn Model (3–4 weeks) — calibrated ML scoring, value at risk, payment levers.",
       "AI Agents for Operations (4–8 weeks) — monitoring, triage, classification with human-in-the-loop guardrails.",
+      "BigQuery for AI Agents (2–3 weeks) — layered model, documentation standard, quality checks and migration plan so agents pick the right table.",
       "Fractional Head of Data (ongoing) — 2–3 days a month roadmap, reporting, governance & hiring.",
       "Data & AI Health Check (1 week) — fixed-price diagnostic on trust, fixes, builds and costs."
     ],
@@ -160,7 +166,7 @@ export const cvData: CVData = {
     {
       id: "raffle-house",
       title: "Raffle House | Growth Analytics & ML Platform",
-      description: "UK subscription brand (~£9m). Six weeks: tested BigQuery warehouse (24 nightly checks), direct Meta/Klaviyo/Google Ads/GA4 feeds, channel engine correcting 30% of buyers' channels (34% → 2.7% organic), calibrated churn model (~£49k/month at risk), forecast at 16.5% error, seven executive reports, all running for pennies a day.",
+      description: "UK subscription brand (~£9m). Six weeks: tested BigQuery warehouse (49-test nightly quality gate), direct Meta/Klaviyo/Google Ads/GA4 feeds, channel engine correcting 30% of buyers' channels (34% → 2.7% organic), calibrated churn model (~£49k/month at risk), forecast at 16.5% error, seven executive reports, all running for pennies a day.",
       liveUrl: "#",
       github: "https://github.com/brytesika-AI",
       sector: "Growth & Commerce",
@@ -169,10 +175,13 @@ export const cvData: CVData = {
       client: "Raffle House",
       period: "Sept 2026 – present",
       outcomes: [
-        "Rebuilt BigQuery warehouse alongside production: £23.9m all-time revenue, 1.38m orders, 81.7k subscriptions; 24 automated checks matching source to penny.",
+        "Rebuilt BigQuery warehouse alongside production: £23.9m all-time revenue, 1.38m orders, 81.7k subscriptions; a 49-test nightly quality gate (36 hard stops) matching source to the penny.",
         "Direct Meta, Klaviyo, Google Ads and GA4 feeds on Cloud Run with secrets in Secret Manager at no tool cost.",
         "Channel rules engine corrected 30% of buyers' channels: GA4 showed organic social at 34%, true was 2.7%; recovered 10,400 email buyers filed as 'Unassigned'.",
-        "Calibrated churn model (2.9× lift in riskiest 10%; held on unseen month) sizing ~£49k/month likely to lapse; forecast back-tested at 16.5% error (vs 24% baseline)."
+        "Calibrated churn model (2.9× lift in riskiest 10%; held on unseen month) sizing ~£49k/month likely to lapse; forecast back-tested at 16.5% error (vs 24% baseline).",
+        "Consolidated 33 overlapping reporting objects into 14 (6 dimensions, 5 facts) with 217 legacy metrics mapped and none lost; nine scheduled queries replaced by one orchestrated nightly build.",
+        "Lifted revenue with a known marketing channel from 0.9% to about 22% by matching GA4 user IDs to customer IDs; whole warehouse runs for under £1 a month in queries.",
+        "Wrote the team-wide AI assistant prompt that routes every question to verified tables with freshness checks, cost limits and caveats."
       ]
     },
     {
@@ -535,7 +544,7 @@ export const cvData: CVData = {
       date: "2025 – Present",
       bullets: [
         "Data, analytics and AI engagements for clients in the UK and Africa, including Raffle House; ~10 production AI systems; 18+ public repositories at github.com/brytesika-AI.",
-        "**[RAFFLE HOUSE]** Rebuilt the BigQuery warehouse alongside production: £23.9m all-time revenue, 1.38m orders, 81.7k subscriptions; 24 automated checks every morning matching source to the penny. Direct Meta, Klaviyo, Google Ads and GA4 feeds on Cloud Run with secrets in Secret Manager at no tool cost.",
+        "**[RAFFLE HOUSE]** Rebuilt the BigQuery warehouse alongside production: £23.9m all-time revenue, 1.38m orders, 81.7k subscriptions; a 49-test quality gate every morning matching source to the penny. Direct Meta, Klaviyo, Google Ads and GA4 feeds on Cloud Run with secrets in Secret Manager at no tool cost.",
         "**[MARKETING TRUTH]** Channel rules engine corrected 30% of buyers' channels: GA4 showed organic social at 34% of buyers; true figure was 2.7%. Recovered 10,400 email buyers filed as 'Unassigned'.",
         "**[MACHINE LEARNING]** Calibrated churn model (2.9× lift in riskiest 10%; held up on unseen month) sizing ~£49k a month likely to lapse; caught raw probabilities overstated more than four times. New-customer forecast back-tested at 16.5% error against 24% for baseline.",
         "**[COMMERCIAL IMPACT]** Sized ~£56k a month in failed or unapproved payments; made paid efficiency VAT-correct; seven executive reports with scenario planner for price, retention and spend running for pennies a day."
