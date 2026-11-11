@@ -182,6 +182,18 @@ h1, h2, h3, h4, h5 {
   font-size: 0.8rem;
 }
 
+.btn-primary {
+  background: var(--color-strategy);
+  color: #ffffff;
+  border: 1px solid var(--color-strategy);
+}
+
+.btn-primary:hover {
+  background: var(--color-orchestrator);
+  border-color: var(--color-orchestrator);
+  transform: translateY(-1px);
+}
+
 .btn-secondary {
   background: rgba(255, 255, 255, 0.04);
   color: var(--text-primary);
@@ -680,6 +692,8 @@ h1, h2, h3, h4, h5 {
   flex-direction: column;
   overflow: hidden;
   height: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .cv-tabs-header {
@@ -758,6 +772,13 @@ h1, h2, h3, h4, h5 {
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0.85rem 0.75rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.cv-tab-content > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 /* Timeline */

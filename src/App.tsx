@@ -13,11 +13,7 @@ import {
   Award,
   Volume2,
   VolumeX,
-  StopCircle,
-  Mic,
-  Sparkles,
-  Monitor,
-  Settings
+  StopCircle
 } from 'lucide-react';
 import { cvData, type Project } from './data/cvData';
 
@@ -51,11 +47,11 @@ export default function App() {
   const [messages, setMessages] = useState<Message[]>([
     {
       sender: 'agent',
-      text: `Hello! I'm Bright C. Sikazwe — AI Strategist, Data Platforms & Engineering Leader, and Acting Principal Engineer at MultiChoice Group (a Canal+ company). Welcome to my AI Digital Twin.
+      text: `Hello! I'm Bright C. Sikazwe — Fractional Head of Data & AI, Founder of brytesika-AI, and Acting Principal Engineer at MultiChoice Group (a Canal+ company). Welcome to my AI Digital Twin.
 
-Ask me about my 13+ years of experience in AI, data platforms, telemetry forensics, executive analytics, or my PhD research on the AI-SRF framework at the University of Johannesburg.
+Ask me about my 17 years in AI, data platforms and executive analytics, my recent client results (like rebuilding Raffle House's growth analytics warehouse in six weeks), or my PhD research on the AI-SRF framework at the University of Johannesburg.
 
-Alternatively, paste a job specification in the 'Job Matcher' tab on the right so I can give you a probability score of my match, explain my reasoning, and answer any follow-up questions you have!`
+Hiring for a role? Paste the job specification in the 'Job Matcher' tab. Looking for a consultant? Open 'Work With Me' to see my fixed-scope sprint offers and client outcomes.`
     }
   ]);
   
@@ -65,11 +61,12 @@ Alternatively, paste a job specification in the 'Job Matcher' tab on the right s
   const [logs, setLogs] = useState<LogLine[]>([
     { type: 'info', text: 'Initializing Digital Twin framework...' },
     { type: 'success', text: 'Digital Twin online.' },
-    { type: 'info', text: 'Cloudflare Workers AI Llama-3.1 connection established. Ready for queries.' }
+    { type: 'info', text: 'Cloudflare Workers AI connection established. Ready for queries.' }
   ]);
 
-  const [activeTab, setActiveTab] = useState<'summary' | 'experience' | 'competencies' | 'certifications' | 'african-context' | 'research' | 'hobbies' | 'linkedin-posts' | 'job-matcher'>('summary');
-  const [portfolioFilter, setPortfolioFilter] = useState<'All' | 'Agriculture & Health' | 'Mining & Resources' | 'Telco & IoT' | 'Strategy & Politics'>('All');
+  const [activeTab, setActiveTab] = useState<'summary' | 'experience' | 'competencies' | 'certifications' | 'african-context' | 'research' | 'hobbies' | 'linkedin-posts' | 'job-matcher' | 'consulting'>('summary');
+  const [portfolioFilter, setPortfolioFilter] = useState<'All' | 'Growth & Commerce' | 'Telco & IoT' | 'Agriculture & Health' | 'Fintech' | 'Mining & Resources' | 'Strategy & Politics'>('All');
+  const [workingOnly, setWorkingOnly] = useState(true);
 
   // Job Spec Matcher States
   const [jobSpecText, setJobSpecText] = useState('');
@@ -87,174 +84,48 @@ Alternatively, paste a job specification in the 'Job Matcher' tab on the right s
     logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [logs]);
 
-  // ── Voice / TTS — real voice cloning (MisoTTS-ready) ───────────────────
-  // Engine stack:
-  //   1. Coqui XTTS-v2 via /api/tts (open-source, HF Spaces)  — when sample recorded
-  //   2. Web Speech API fallback                               — always available
-  //   3. MisoTTS swap-in                                       — change /api/tts target
-
+  // ── Voice / TTS — Bright's cloned voice only ───────────────────────────
+  // /api/tts always clones Bright's voice (ElevenLabs clone or F5-TTS). If it
+  // is unavailable the reply stays text-only; we never fall back to another voice.
   const [isTtsEnabled,   setIsTtsEnabled]   = useState(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('bright_tts_enabled');
-      return stored !== 'false'; // Defaults to true
-    }
-    return true;
+    try { return localStorage.getItem('bright_tts_enabled') !== 'false'; } catch { return true; }
   });
   const [isSpeaking,     setIsSpeaking]     = useState(false);
-  const [ttsEngine,      setTtsEngine]      = 
-    useState<'webspeech' | 'cloned_f5' | 'cloudflare_ai' | 'elevenlabs_deep_african' | 'elevenlabs_cloned' | 'elevenlabs_custom'>('cloned_f5');
-  const [voiceSample,    setVoiceSample]    = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('bright_voice_sample');
-    }
-    return null;
-  }); // base64 data-URL (local preview)
-  const [voiceId,        setVoiceId]        = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('bright_voice_id');
-    }
-    return null;
-  }); // ElevenLabs voice_id
-  const [customVoiceId,  setCustomVoiceId]  = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('bright_custom_voice_id') || '';
-    }
-    return '';
-  });          // custom ElevenLabs voice_id
   const [isSynthesizing, setIsSynthesizing] = useState(false);
-  const [isCloning,      setIsCloning]      = useState(false);               // voice upload in progress
-  const [isRecording,    setIsRecording]    = useState(false);
-  const [showVoiceModal, setShowVoiceModal] = useState(false);
-  const [recordingSecs,  setRecordingSecs]  = useState(0);
-  const [cloneError,     setCloneError]     = useState<string | null>(null);
-
-  // Sync voice selection settings to localStorage
-  useEffect(() => {
-    localStorage.setItem('bright_tts_engine', ttsEngine);
-  }, [ttsEngine]);
+  const [voiceNotice,    setVoiceNotice]    = useState<string | null>(null);
+  const clonedAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    localStorage.setItem('bright_tts_enabled', String(isTtsEnabled));
+    try { localStorage.setItem('bright_tts_enabled', String(isTtsEnabled)); } catch { /* storage unavailable */ }
   }, [isTtsEnabled]);
 
-  useEffect(() => {
-    if (customVoiceId) {
-      localStorage.setItem('bright_custom_voice_id', customVoiceId);
-    } else {
-      localStorage.removeItem('bright_custom_voice_id');
-    }
-  }, [customVoiceId]);
-
-  const synthRef          = useRef<SpeechSynthesis | null>(null);
-  const voicesRef         = useRef<SpeechSynthesisVoice[]>([]);
-  const mediaRecRef       = useRef<MediaRecorder | null>(null);
-  const audioChunksRef    = useRef<Blob[]>([]);
-  const recTimerRef       = useRef<ReturnType<typeof setInterval> | null>(null);
-  const clonedAudioRef    = useRef<HTMLAudioElement | null>(null);
-
-  // Initialise Web Speech
-  useEffect(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      synthRef.current = window.speechSynthesis;
-      const load = () => { voicesRef.current = window.speechSynthesis.getVoices(); };
-      load();
-      window.speechSynthesis.onvoiceschanged = load;
-    }
-    return () => { if (synthRef.current) synthRef.current.cancel(); };
-  }, []);
-
-  // Strip markdown → plain speech
-  const stripMarkdown = (t: string) =>
-    t.replace(/#{1,6}\s+/g, '')
-     .replace(/\*\*([^*]+)\*\*/g, '$1')
-     .replace(/\*([^*]+)\*/g, '$1')
-     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-     .replace(/^\s*[-*]\s+/gm, '')
-     .replace(/^\s*\d+\.\s+/gm, '')
-     .replace(/\*\*\*/g, '.').replace(/---/g, '.')
-     .replace(/\n{2,}/g, '. ').replace(/\n/g, ' ')
-     .trim();
-
-  // Web Speech fallback
-  const speakText = (text: string) => {
-    if (!synthRef.current) return;
-    synthRef.current.cancel();
-    const plain = stripMarkdown(text);
-    if (!plain) return;
-    const utt = new SpeechSynthesisUtterance(plain);
-    const vs  = voicesRef.current;
-    const pick =
-      vs.find(v => v.lang === 'en-ZA') ||
-      vs.find(v => v.lang.startsWith('en-GB') && v.name.toLowerCase().includes('male')) ||
-      vs.find(v => v.lang.startsWith('en-GB')) ||
-      vs.find(v => v.lang.startsWith('en-US') && v.name.toLowerCase().includes('male')) ||
-      vs.find(v => v.lang.startsWith('en'));
-    if (pick) utt.voice = pick;
-    utt.rate = 0.92; utt.pitch = 0.95; utt.volume = 1;
-    utt.onstart = () => setIsSpeaking(true);
-    utt.onend   = () => setIsSpeaking(false);
-    utt.onerror = () => setIsSpeaking(false);
-    synthRef.current.speak(utt);
-  };
-
-  // Server-side text-to-speech (F5-TTS, MeloTTS, ElevenLabs presets, or cloned voice)
-  const speakWithServerTTS = async (text: string) => {
-    setCloneError(null);
+  const speakInBrightsVoice = async (text: string) => {
+    setVoiceNotice(null);
     setIsSynthesizing(true);
     setIsSpeaking(true);
-    
-    let activeVoiceId: string | undefined = undefined;
-    if (ttsEngine === 'cloned_f5') {
-      activeVoiceId = 'f5_clone';
-    } else if (ttsEngine === 'elevenlabs_deep_african') {
-      activeVoiceId = 'l9tGNEOXywIMjpp2p3gN';
-    } else if (ttsEngine === 'elevenlabs_cloned') {
-      activeVoiceId = voiceId || undefined;
-      if (!activeVoiceId) {
-        setIsSynthesizing(false);
-        setCloneError('No cloned voice sample found. Please record one first.');
-        speakText(text);
-        return;
-      }
-    } else if (ttsEngine === 'elevenlabs_custom') {
-      activeVoiceId = customVoiceId.trim() || undefined;
-      if (!activeVoiceId) {
-        setIsSynthesizing(false);
-        setCloneError('Please enter a custom ElevenLabs Voice ID.');
-        speakText(text);
-        return;
-      }
-    }
-
     try {
       const res = await fetch('/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voiceId: activeVoiceId }),
+        body: JSON.stringify({ text }),
       });
-      const data: { audioData?: string; fallback?: boolean; error?: string; provider?: string } =
-        await res.json();
-
-      if (data.audioData && !data.fallback) {
-        if (clonedAudioRef.current) { clonedAudioRef.current.pause(); }
-        const audio = new Audio(data.audioData);
-        clonedAudioRef.current = audio;
-        audio.onended = () => { setIsSpeaking(false); setIsSynthesizing(false); };
-        audio.onerror = () => { setIsSynthesizing(false); speakText(text); };
-        await audio.play();
-      } else {
-        setIsSynthesizing(false);
-        setCloneError(data.error ?? 'Synthesis failed — using Web Speech fallback');
-        speakText(text);
-      }
-    } catch {
+      const data: { audioData?: string; error?: string } = await res.json();
+      if (!data.audioData) throw new Error(data.error);
+      if (clonedAudioRef.current) clonedAudioRef.current.pause();
+      const audio = new Audio(data.audioData);
+      clonedAudioRef.current = audio;
+      audio.onended = () => { setIsSpeaking(false); setIsSynthesizing(false); };
+      audio.onerror = () => { setIsSpeaking(false); setIsSynthesizing(false); };
       setIsSynthesizing(false);
-      speakText(text);
+      await audio.play();
+    } catch {
+      setIsSpeaking(false);
+      setIsSynthesizing(false);
+      setVoiceNotice("My voice is briefly unavailable — I'll answer in text for now.");
     }
   };
 
   const stopSpeaking = () => {
-    if (synthRef.current) synthRef.current.cancel();
     if (clonedAudioRef.current) { clonedAudioRef.current.pause(); clonedAudioRef.current.currentTime = 0; }
     setIsSpeaking(false);
     setIsSynthesizing(false);
@@ -265,134 +136,39 @@ Alternatively, paste a job specification in the 'Job Matcher' tab on the right s
     if (!isTtsEnabled || messages.length === 0) return;
     const last = messages[messages.length - 1];
     if (last.sender === 'agent') {
-      const t = setTimeout(() => {
-        if (ttsEngine !== 'webspeech') speakWithServerTTS(last.text);
-        else speakText(last.text);
-      }, 200);
+      const t = setTimeout(() => speakInBrightsVoice(last.text), 200);
       return () => clearTimeout(t);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, isTtsEnabled]);
-
-  // ── Voice recording (MediaRecorder API) ─────────────────────────────────
-  const startRecording = async () => {
-    setCloneError(null);
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-        ? 'audio/webm;codecs=opus'
-        : 'audio/webm';
-      const mr = new MediaRecorder(stream, { mimeType });
-      mediaRecRef.current  = mr;
-      audioChunksRef.current = [];
-
-      mr.ondataavailable = e => { if (e.data.size > 0) audioChunksRef.current.push(e.data); };
-      mr.onstop = () => {
-        const blob = new Blob(audioChunksRef.current, { type: mimeType });
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-          const b64 = reader.result as string;
-          setVoiceSample(b64);
-          localStorage.setItem('bright_voice_sample', b64);
-          // Upload sample to ElevenLabs Instant Voice Clone
-          setIsCloning(true);
-          setCloneError(null);
-          try {
-            const res = await fetch('/api/voice-clone', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ voiceSample: b64 }),
-            });
-            const data = await res.json() as { voiceId?: string; error?: string };
-            if (data.voiceId) {
-              setVoiceId(data.voiceId);
-              setTtsEngine('elevenlabs_cloned');
-              localStorage.setItem('bright_voice_id', data.voiceId);
-            } else {
-              setCloneError(data.error ?? 'Voice cloning failed — Web Speech fallback active');
-            }
-          } catch {
-            setCloneError('Voice upload failed — check your connection and try again');
-          } finally {
-            setIsCloning(false);
-          }
-        };
-        reader.readAsDataURL(blob);
-        stream.getTracks().forEach(t => t.stop());
-      };
-
-      mr.start(100);
-      setIsRecording(true);
-      setRecordingSecs(0);
-      recTimerRef.current = setInterval(() => {
-        setRecordingSecs(s => {
-          if (s >= 15) { stopRecording(); return s; }
-          return s + 1;
-        });
-      }, 1000);
-    } catch {
-      setCloneError('Microphone access denied. Please allow mic access and try again.');
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecRef.current && isRecording) {
-      mediaRecRef.current.stop();
-      setIsRecording(false);
-      if (recTimerRef.current) { clearInterval(recTimerRef.current); recTimerRef.current = null; }
-    }
-  };
-
-  const clearVoiceSample = () => {
-    stopSpeaking();
-    localStorage.removeItem('bright_voice_sample');
-    localStorage.removeItem('bright_voice_id');
-    setVoiceSample(null);
-    setVoiceId(null);
-    setTtsEngine('cloned_f5');
-    setCloneError(null);
-  };
-
-  const cloneFromReferenceFile = async () => {
-    setIsCloning(true);
-    setCloneError(null);
-    try {
-      const res = await fetch('/api/voice-clone', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ useReferenceFile: true }),
-      });
-      const data = await res.json() as { voiceId?: string; error?: string };
-      if (data.voiceId) {
-        setVoiceId(data.voiceId);
-        setTtsEngine('elevenlabs_cloned');
-        localStorage.setItem('bright_voice_id', data.voiceId);
-        setVoiceSample('reference_file');
-        localStorage.setItem('bright_voice_sample', 'reference_file');
-      } else {
-        setCloneError(data.error ?? 'Voice cloning failed — Web Speech fallback active');
-      }
-    } catch {
-      setCloneError('Voice upload failed — check your connection and try again');
-    } finally {
-      setIsCloning(false);
-    }
-  };
   // ── End Voice / TTS ──────────────────────────────────────────────────────
 
 
 
 
 
-  // Filter projects
-  const filteredProjects = cvData.projects.filter(project => {
-    if (portfolioFilter === 'All') return true;
-    if (portfolioFilter === 'Agriculture & Health') return project.sector === 'Agriculture' || project.sector === 'Healthcare';
-    if (portfolioFilter === 'Mining & Resources') return project.sector.includes('Mining') || project.sector.includes('Geology');
-    if (portfolioFilter === 'Telco & IoT') return project.sector.includes('Telecommunications') || project.sector.includes('IoT');
-    if (portfolioFilter === 'Strategy & Politics') return project.sector.includes('Politics') || project.sector.includes('Research') || project.sector.includes('Strategy');
-    return true;
-  });
+  // Filter and sort projects
+  const filteredProjects = cvData.projects
+    .filter(project => {
+      if (workingOnly && project.status === 'Prototype') return false;
+      if (portfolioFilter === 'All') return true;
+      if (portfolioFilter === 'Growth & Commerce') return project.sector.includes('Growth') || project.sector.includes('Commerce');
+      if (portfolioFilter === 'Telco & IoT') return project.sector.includes('Telecommunications') || project.sector.includes('IoT') || project.sector.includes('Telco');
+      if (portfolioFilter === 'Agriculture & Health') return project.sector.includes('Agriculture') || project.sector.includes('Health');
+      if (portfolioFilter === 'Fintech') return project.sector === 'Fintech';
+      if (portfolioFilter === 'Mining & Resources') return project.sector.includes('Mining') || project.sector.includes('Geology');
+      if (portfolioFilter === 'Strategy & Politics') return project.sector.includes('Politics') || project.sector.includes('Research') || project.sector.includes('Strategy');
+      return true;
+    })
+    .slice()
+    .sort((a, b) => {
+      const getPriority = (status?: string) => {
+        if (status === 'Client engagement') return 1;
+        if (status === 'Live in production') return 2;
+        if (status === 'Delivered') return 3;
+        return 4; // Prototype
+      };
+      return getPriority(a.status) - getPriority(b.status);
+    });
 
   // Deep dive asks about a project
   const handleProjectAsk = (project: Project) => {
@@ -680,7 +456,7 @@ I put this directly into practice by building **Tiny Tamagotchi MVP** using stri
 1. How does spec-driven development compare to traditional prompt engineering in your experience?
 2. How are you applying the Google ADK principles to your production work at MultiChoice?`;
         } else if (lowercaseText.includes('project') || lowercaseText.includes('shipped') || lowercaseText.includes('product') || lowercaseText.includes('built') || lowercaseText.includes('portfolio') || lowercaseText.includes('kavango') || lowercaseText.includes('dischem') || lowercaseText.includes('mineral')) {
-          simulatedReply = `I have 15 live and prototype systems deployed across diverse domains — each solving a real problem in the African and emerging market context.
+          simulatedReply = `I have ${cvData.projects.length} live and prototype systems deployed across diverse domains — each solving a real problem in the African and emerging market context.
 
 **Kavango & Mineral Intelligence** is a CEO-facing critical-minerals exploration platform for Africa, modelled on KoBold's TerraShed — with geological-rulebook scoring, an 'Induna' geologist agent, copper prospectivity mapping achieving a **0.903 ROC-AUC** over a 12,100-cell prediction grid, and Morupule Predictive Intelligence for coal mine equipment scenario advisory (browser-based Transformers.js).
 
@@ -706,7 +482,7 @@ I have a **~26,000-word PhD proposal** through supervisor review, an **arXiv pre
 1. How do you quantify Return on Resilience (ROR) — what are the measurement inputs and agent interactions?
 2. How does the AI-SRF's nine-agent architecture differ from standard multi-agent orchestration frameworks?`;
         } else if (lowercaseText.includes('multichoice') || lowercaseText.includes('explora') || lowercaseText.includes('fsu') || lowercaseText.includes('telemetry') || lowercaseText.includes('decoder') || lowercaseText.includes('canal')) {
-          simulatedReply = `At **MultiChoice Group (a Canal+ company)**, I serve as Acting Principal Engineer & Lead for Data Platforms & Engineering — responsible for AI strategy and production ML across Africa's largest entertainment platform — **20M+ subscribers across 50 countries**. I was selected for the **Executive Head Training Program** in April 2024.
+          simulatedReply = `At **MultiChoice Group (a Canal+ company)**, I serve as Acting Principal Engineer & Lead for Data Platforms & Engineering — responsible for AI strategy and production ML across Africa's largest entertainment platform — **~20M subscribers across 46 markets**. I was selected for the **Executive Head Training Program** in April 2024.
 
 One of the most demanding challenges I've faced was the **Explora 3B reboot loop crisis** — ~80% of 98 monitored smartcards were rebooting multiple times daily. I analysed **~72,000 lines of raw Irdeto IMW debug logs** and a 674-row telemetry export, isolating three reinforcing layers: (1) **Si2183 tuner BER spikes ~735K (~1,800x the median)**; (2) OTA scheduler computing against the **1970 Unix epoch before NTP sync**; (3) a synchronised 58%→80% fleet spike pointing to an upstream OTA/CAS trigger. I delivered a **6-item P1/P2-prioritised remediation plan** for Broadcast, Middleware, Field and CAS teams.
 
@@ -724,11 +500,11 @@ On the AI side, I deployed a production **GenAI ensemble (Gemini 2.5 Flash + Qwe
         } else {
           simulatedReply = `I'm Bright C. Sikazwe — AI and Data Analytics Leader in AI Enablement, currently Acting Principal Engineer & Lead for Data Platforms & Engineering at MultiChoice Group (a Canal+ company), and PhD Candidate at the University of Johannesburg.
 
-I have **13+ years** translating complex data into strategic assets across media, telecommunications, healthcare, agriculture, mining and financial services. My work spans the full AI value chain: from enterprise AI strategy, use-case prioritisation and C-suite buy-in, through to production GenAI/LLM deployment, telemetry forensics, responsible AI governance, and measurable value delivery.
+I have **17 years** translating complex data into strategic assets across media, telecommunications, healthcare, agriculture, mining and financial services. My work spans the full AI value chain: from enterprise AI strategy, use-case prioritisation and C-suite buy-in, through to production GenAI/LLM deployment, telemetry forensics, responsible AI governance, and measurable value delivery.
 
 I was **selected for the MultiChoice Executive Head Training Program** in April 2024. I'm equally credible presenting to the Group CTO and resolving P1 production incidents in raw device logs.
 
-I have **15 live and prototype AI systems** deployed on cloud infrastructure — including the Kavango mineral intelligence platform, AfriCare (pan-African health AI across 15 nations), abfAgri (SADC agricultural intelligence), SentimentCommand (Zambia 2026 election intelligence), and MOSAIC (Enterprise Architecture decision board). You can explore them all in the portfolio panel.
+I have **${cvData.projects.length} live and prototype AI systems** deployed on cloud infrastructure — including the Kavango mineral intelligence platform, AfriCare (pan-African health AI across 15 nations), abfAgri (SADC agricultural intelligence), SentimentCommand (Zambia 2026 election intelligence), and MOSAIC (Enterprise Architecture decision board). You can explore them all in the portfolio panel.
 
 What would you like to explore?
 
@@ -764,7 +540,7 @@ What would you like to explore?
       setLogs(prev => [
         ...prev,
         { type: 'agent-log', text: '[ADK Tool: Job_Spec_Evaluator_Tool] Loading CV context & aligning weights...' },
-        { type: 'agent-log', text: '[ADK Tool: Job_Spec_Evaluator_Tool] Evaluating requirements against 10+ years experience...' }
+        { type: 'agent-log', text: '[ADK Tool: Job_Spec_Evaluator_Tool] Evaluating requirements against 17 years experience...' }
       ]);
     }, 400);
 
@@ -903,7 +679,7 @@ What would you like to explore?
     if (score < 50) score = 55;
     
     let justification = `### Theme 1: Strategic AI Leadership & Enterprise Data Platform
-With 13+ years at MultiChoice Group — Africa's largest entertainment platform (20M+ subscribers, 50 countries) — I operate as Acting Principal Engineer & Lead, Data Platforms & Engineering, selected for the Executive Head Training Program in April 2024.
+With 11 years at MultiChoice Group (a ~20M-subscriber business across 46 markets) and 17 years in data overall — I operate as Acting Principal Engineer & Lead, Data Platforms & Engineering, selected for the Executive Head Training Program in April 2024.
 
 * **Situation**: MultiChoice Group needed to transform from reactive analytics into a proactive AI-first enterprise, amid SADC infrastructural challenges and the complexity of the MultiChoice–Canal+ integration.
 * **Task**: As AI and Data Analytics Leader in AI Enablement, my task was to own enterprise AI strategy, production ML deployment, data platform architecture, and executive alignment — end to end.
@@ -924,7 +700,7 @@ With 13+ years at MultiChoice Group — Africa's largest entertainment platform 
 
     if (lowercase.includes('momentum') || lowercase.includes('financial') || lowercase.includes('insurance') || lowercase.includes('bank')) {
       justification = `### Theme 1: Digital Strategy & AI-First Financial Services
-With 13+ years spanning enterprise AI strategy, C-suite analytics, and production data platform architecture at MultiChoice Group, I bring a proven track record of translating complex data into boardroom-level strategic value.
+With 17 years spanning enterprise AI strategy, C-suite analytics, and production data platform architecture at MultiChoice Group, I bring a proven track record of translating complex data into boardroom-level strategic value.
 
 * **Situation**: Financial services require a leader who can bridge AI engineering execution with digital business strategy, regulatory compliance (POPIA), and customer-centric insight delivery.
 * **Task**: Formulate and deliver an AI-first digital strategy integrating diverse customer data touchpoints, with strict information-security risk governance and measurable business outcomes.
@@ -984,6 +760,10 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
           </div>
           
           <div className="header-cta">
+            <a href={cvData.consulting.cta.mailto} className="btn btn-primary">
+              <Send size={16} />
+              Hire Me
+            </a>
             <a href={cvData.personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
               <LinkedinIcon size={16} />
               LinkedIn
@@ -1018,274 +798,35 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                 }}></span>
               </h3>
 
-              {/* Voice Controls */}
+              {/* Voice Controls — Bright's cloned voice only */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-
-                {/* Voice Studio button */}
-                <button
-                  onClick={() => setShowVoiceModal(true)}
-                  className={`voice-record-trigger ${ttsEngine !== 'webspeech' ? 'has-sample' : ''}`}
-                  title={isTtsEnabled
-                    ? `Voice active · Configured via Voice Studio`
-                    : 'Open AI Voice Studio'}
-                >
-                  <Settings size={12} />
-                  <span>Voice Studio</span>
-                </button>
-
-                {/* Synthesizing spinner */}
                 {isSynthesizing && (
-                  <span className="synth-spinner" title="Synthesizing audio…">
+                  <span className="synth-spinner" title="Generating Bright's voice…">
                     <span />
                   </span>
                 )}
-
-                {/* Speaking waveform */}
                 {isSpeaking && !isSynthesizing && (
                   <div className="voice-waveform" aria-label="Speaking">
                     <span /><span /><span /><span /><span />
                   </div>
                 )}
-
-                {/* Stop button */}
                 {(isSpeaking || isSynthesizing) && (
                   <button onClick={stopSpeaking} className="voice-stop-btn" title="Stop">
                     <StopCircle size={13} />
                   </button>
                 )}
-
-                {/* TTS toggle */}
                 <button
                   onClick={() => { const n = !isTtsEnabled; setIsTtsEnabled(n); if (!n) stopSpeaking(); }}
                   className={`voice-toggle-btn ${isTtsEnabled ? 'active' : ''}`}
-                  title={isTtsEnabled
-                    ? `Voice ON · ${
-                        ttsEngine === 'cloned_f5' ? "Bright's F5-TTS Voice"
-                        : ttsEngine === 'cloudflare_ai' ? 'Cloudflare AI'
-                        : ttsEngine === 'elevenlabs_deep_african' ? 'Deep African'
-                        : ttsEngine === 'elevenlabs_cloned' ? 'Cloned Voice'
-                        : ttsEngine === 'elevenlabs_custom' ? 'Custom Voice'
-                        : 'Web Speech API'
-                      } — click to mute`
-                    : 'Enable voice output'}
+                  title={!isTtsEnabled ? "Hear replies in Bright's own voice" : voiceNotice ?? "Speaking in Bright's own (AI-cloned) voice — click to mute"}
                 >
                   {isTtsEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
                   <span style={{ fontSize: '0.65rem', fontFamily: 'var(--font-mono)' }}>
-                    {isTtsEnabled 
-                      ? (ttsEngine === 'cloned_f5' ? 'BRIGHT VOICE'
-                         : ttsEngine === 'cloudflare_ai' ? 'CLOUD AI' 
-                         : ttsEngine === 'elevenlabs_deep_african' ? 'AFRICAN'
-                         : ttsEngine === 'elevenlabs_cloned' ? 'MY VOICE'
-                         : ttsEngine === 'elevenlabs_custom' ? 'CUSTOM'
-                         : 'ON') 
-                      : 'OFF'}
+                    {!isTtsEnabled ? 'OFF' : voiceNotice ? 'TEXT ONLY' : 'BRIGHT VOICE'}
                   </span>
                 </button>
               </div>
             </div>
-
-            {/* Voice Recording Modal */}
-            {showVoiceModal && (
-              <div className="voice-modal-overlay" onClick={() => { if (!isRecording) setShowVoiceModal(false); }}>
-                <div className="voice-modal voice-studio-modal" onClick={e => e.stopPropagation()}>
-                  <div className="voice-modal-header">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <Volume2 size={16} color="var(--color-orchestrator)" />
-                      <span>AI Voice Studio</span>
-                    </div>
-                    <button
-                      onClick={() => { if (!isRecording) setShowVoiceModal(false); }}
-                      style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: '1rem', lineHeight: 1 }}
-                    >✕</button>
-                  </div>
-
-                  <p className="voice-modal-desc" style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
-                    Select the text-to-speech engine and voice profile for Bright's Digital Twin.
-                  </p>
-
-                  {/* Engine Selection Grid */}
-                  <div className="voice-engine-grid">
-                    {/* F5-TTS Voice Clone from Link (Free & Keyless) */}
-                    <div 
-                      className={`voice-engine-card ${ttsEngine === 'cloned_f5' ? 'active' : ''}`}
-                      onClick={() => setTtsEngine('cloned_f5')}
-                    >
-                      <div className="card-badge free">Free / Cloned</div>
-                      <div className="card-header">
-                        <Sparkles size={14} className="card-icon" />
-                        <span>Bright's Real Voice</span>
-                      </div>
-                      <div className="card-desc">Zero-shot clone from video clip. Free, serverless, and matches Bright's actual voice.</div>
-                    </div>
-
-                    {/* Cloudflare AI MeloTTS (Keyless & Free) */}
-                    <div 
-                      className={`voice-engine-card ${ttsEngine === 'cloudflare_ai' ? 'active' : ''}`}
-                      onClick={() => setTtsEngine('cloudflare_ai')}
-                    >
-                      <div className="card-badge free">Free / Keyless</div>
-                      <div className="card-header">
-                        <Sparkles size={14} className="card-icon" />
-                        <span>Cloudflare AI</span>
-                      </div>
-                      <div className="card-desc">MeloTTS server-side synthesis. Standard English helper voice.</div>
-                    </div>
-
-                    {/* Web Speech API */}
-                    <div 
-                      className={`voice-engine-card ${ttsEngine === 'webspeech' ? 'active' : ''}`}
-                      onClick={() => setTtsEngine('webspeech')}
-                    >
-                      <div className="card-badge local">Offline / Local</div>
-                      <div className="card-header">
-                        <Monitor size={14} className="card-icon" />
-                        <span>Web Speech API</span>
-                      </div>
-                      <div className="card-desc">Uses your browser's built-in local TTS engine. Zero latency.</div>
-                    </div>
-
-                    {/* ElevenLabs Deep African */}
-                    <div 
-                      className={`voice-engine-card ${ttsEngine === 'elevenlabs_deep_african' ? 'active' : ''}`}
-                      onClick={() => setTtsEngine('elevenlabs_deep_african')}
-                    >
-                      <div className="card-badge premium">Premium</div>
-                      <div className="card-header">
-                        <Globe size={14} className="card-icon" />
-                        <span>African Deep Male</span>
-                      </div>
-                      <div className="card-desc">ElevenLabs deep male voice (Neil B Jr) with a warm African-accented tone.</div>
-                    </div>
-
-                    {/* ElevenLabs Cloned Voice */}
-                    <div 
-                      className={`voice-engine-card ${ttsEngine === 'elevenlabs_cloned' ? 'active' : ''}`}
-                      onClick={() => setTtsEngine('elevenlabs_cloned')}
-                    >
-                      <div className="card-badge premium">Voice Clone</div>
-                      <div className="card-header">
-                        <Mic size={14} className="card-icon" />
-                        <span>My Cloned Voice</span>
-                      </div>
-                      <div className="card-desc">Speak in your own voice! Replicates your voice from a short recorded clip.</div>
-                    </div>
-
-                    {/* ElevenLabs Custom Voice */}
-                    <div 
-                      className={`voice-engine-card ${ttsEngine === 'elevenlabs_custom' ? 'active' : ''}`}
-                      onClick={() => setTtsEngine('elevenlabs_custom')}
-                    >
-                      <div className="card-badge premium">Custom ID</div>
-                      <div className="card-header">
-                        <Settings size={14} className="card-icon" />
-                        <span>Custom Voice ID</span>
-                      </div>
-                      <div className="card-desc">Use any ElevenLabs voice by pasting its library ID.</div>
-                    </div>
-                  </div>
-
-                  {/* Contextual Settings Area */}
-                  {ttsEngine.startsWith('elevenlabs_') && (
-                    <div className="elevenlabs-setup-info">
-                      🔑 <strong>Requires ElevenLabs API Key:</strong> Make sure <code>ELEVENLABS_API_KEY</code> is set in your Cloudflare Pages dashboard. (Free tier accounts have a free key!)
-                    </div>
-                  )}
-
-                  {/* Custom Voice ID Input */}
-                  {ttsEngine === 'elevenlabs_custom' && (
-                    <div className="custom-voice-id-container">
-                      <label htmlFor="custom-voice-input" className="custom-voice-label">Enter ElevenLabs Voice ID:</label>
-                      <input 
-                        id="custom-voice-input"
-                        type="text" 
-                        placeholder="e.g. l9tGNEOXywIMjpp2p3gN" 
-                        value={customVoiceId}
-                        onChange={(e) => setCustomVoiceId(e.target.value)}
-                        className="custom-voice-input"
-                      />
-                    </div>
-                  )}
-
-                  {/* Voice Clone Recording Controls */}
-                  {ttsEngine === 'elevenlabs_cloned' && (
-                    <div className="cloned-voice-container">
-                      <p className="voice-modal-desc" style={{ marginTop: '0.25rem' }}>
-                        Record <strong>10–15 seconds</strong> of your voice below to clone it:
-                      </p>
-
-                      <div className="voice-modal-tip" style={{ margin: '0.5rem 0' }}>
-                        💡 <em>"I'm Bright Sikazwe, Acting Principal Engineer at MultiChoice Group. I lead AI strategy, data platforms, and production machine learning across Africa's largest entertainment platform."</em>
-                      </div>
-
-                      {isCloning && (
-                        <div className="voice-sample-exists" style={{ color: 'var(--color-orchestrator)', borderColor: 'rgba(var(--color-orchestrator-rgb), 0.2)', background: 'rgba(var(--color-orchestrator-rgb), 0.06)' }}>
-                          <span className="synth-spinner" style={{ marginRight: '0.35rem' }}><span /></span>
-                          Uploading voice sample to ElevenLabs...
-                        </div>
-                      )}
-                      {voiceId && !isRecording && !isCloning && (
-                        <div className="voice-sample-exists">
-                          <Check size={13} /> Voice successfully cloned! (ID: <code>{voiceId.substring(0,8)}...</code>)
-                        </div>
-                      )}
-                      {voiceSample && !voiceId && !isRecording && !isCloning && (
-                        <div className="voice-clone-error">⚠ Sample recorded but cloning failed. Check your API key.</div>
-                      )}
-
-                      {cloneError && (
-                        <div className="voice-clone-error">⚠ {cloneError}</div>
-                      )}
-
-                      <div className="voice-modal-controls" style={{ marginTop: '0.75rem', gap: '0.5rem', flexWrap: 'wrap' }}>
-                        {!isRecording ? (
-                          <>
-                            <button onClick={startRecording} className="record-btn">
-                              <Mic size={14} />
-                              {voiceSample ? 'Re-Record Sample' : 'Start Recording'}
-                            </button>
-                            <button 
-                              onClick={cloneFromReferenceFile} 
-                              className="record-btn" 
-                              style={{ 
-                                background: 'var(--color-orchestrator)', 
-                                border: 'none',
-                                color: 'white'
-                              }}
-                            >
-                              Clone From Provided Voice File
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <div className="recording-indicator">
-                              <div className="rec-dot" />
-                              REC — {recordingSecs}s / 15s
-                              <div className="rec-progress">
-                                <div className="rec-progress-fill" style={{ width: `${(recordingSecs / 15) * 100}%` }} />
-                              </div>
-                            </div>
-                            <button onClick={stopRecording} className="stop-record-btn">
-                              <StopCircle size={13} /> Stop Recording
-                            </button>
-                          </>
-                        )}
-
-                        {voiceSample && !isRecording && (
-                          <button onClick={clearVoiceSample} className="clear-voice-btn">
-                            Clear Clone
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* MisoTTS Future Integration Hint */}
-                  <div className="misotts-footer-hint">
-                    🚀 <em>MisoTTS Ready: Synthesizer automatically switches to MisoTTS 7.7B backbone once MISO_TTS_API_KEY is configured in your Cloudflare dashboard.</em>
-                  </div>
-                </div>
-              </div>
-            )}
 
             <div className="chat-history">
               {messages.map((msg, idx) => {
@@ -1423,20 +964,45 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
         {/* COLUMN 2: PORTFOLIO GRID SECTION (SCROLLABLE CARD LIST) */}
         <section className="glass-panel portfolio-section middle-col">
           <div className="portfolio-header-container">
-            <h3 className="section-title">
-              <Layers size={18} color="var(--color-orchestrator)" />
-              Live AI Product Portfolio
-            </h3>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <h3 className="section-title" style={{ margin: 0 }}>
+                <Layers size={18} color="var(--color-orchestrator)" />
+                Working Projects & Client Results
+              </h3>
+              <label style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                userSelect: 'none',
+                background: workingOnly ? 'rgba(16, 185, 129, 0.14)' : 'rgba(255, 255, 255, 0.04)',
+                border: `1px solid ${workingOnly ? '#10b981' : 'var(--border-mute)'}`,
+                padding: '0.2rem 0.55rem',
+                borderRadius: '12px',
+                color: workingOnly ? '#10b981' : 'var(--text-secondary)',
+                fontWeight: 600,
+                transition: 'all 0.2s ease'
+              }}>
+                <input
+                  type="checkbox"
+                  checked={workingOnly}
+                  onChange={(e) => setWorkingOnly(e.target.checked)}
+                  style={{ accentColor: '#10b981', cursor: 'pointer' }}
+                />
+                Working only
+              </label>
+            </div>
             
             {/* Filter bar */}
             <div className="filters-bar">
-              {(['All', 'Agriculture & Health', 'Mining & Resources', 'Telco & IoT', 'Strategy & Politics'] as const).map(filter => (
+              {(['All', 'Growth & Commerce', 'Telco & IoT', 'Agriculture & Health', 'Fintech', 'Mining & Resources', 'Strategy & Politics'] as const).map(filter => (
                 <button
                   key={filter}
                   onClick={() => setPortfolioFilter(filter)}
                   className={`filter-chip ${portfolioFilter === filter ? 'active' : ''}`}
                 >
-                  {filter.split(' ')[0]}
+                  {filter === 'Growth & Commerce' ? 'Growth' : filter.split(' ')[0]}
                 </button>
               ))}
             </div>
@@ -1447,14 +1013,49 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
             {filteredProjects.map(project => (
               <div key={project.id} className="glass-panel project-card">
                 <div className="project-card-header">
-                  <span className="tag" style={{ borderColor: 'var(--color-orchestrator)', color: 'var(--color-orchestrator)', width: 'fit-content' }}>
-                    {project.sector}
-                  </span>
-                  <h4 className="project-title" style={{ fontSize: '1rem', marginTop: '0.25rem' }}>{project.title}</h4>
-                  <p className="project-desc" style={{ fontSize: '0.8rem', lineHeight: '1.4' }}>{project.description}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <span className="tag" style={{ borderColor: 'var(--color-orchestrator)', color: 'var(--color-orchestrator)', width: 'fit-content' }}>
+                      {project.sector}
+                    </span>
+                    {project.status && (
+                      <span className="tag" style={{
+                        width: 'fit-content',
+                        fontWeight: 600,
+                        fontSize: '0.7rem',
+                        ...((project.status === 'Client engagement' || project.status === 'Live in production')
+                          ? { color: '#10b981', borderColor: 'rgba(16, 185, 129, 0.45)', background: 'rgba(16, 185, 129, 0.12)' }
+                          : project.status === 'Delivered'
+                          ? { color: '#3b82f6', borderColor: 'rgba(59, 130, 246, 0.45)', background: 'rgba(59, 130, 246, 0.12)' }
+                          : { color: '#94a3b8', borderColor: 'rgba(148, 163, 184, 0.35)', background: 'rgba(148, 163, 184, 0.08)' })
+                      }}>
+                        {project.status}
+                      </span>
+                    )}
+                  </div>
+                  <h4 className="project-title" style={{ fontSize: '1rem', marginTop: '0.35rem' }}>{project.title}</h4>
+                  {(project.client || project.period) && (
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.15rem', display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
+                      {project.client && <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Client: {project.client}</span>}
+                      {project.client && project.period && <span style={{ color: 'var(--text-muted)' }}>·</span>}
+                      {project.period && <span>{project.period}</span>}
+                    </div>
+                  )}
+                  <p className="project-desc" style={{ fontSize: '0.8rem', lineHeight: '1.4', marginTop: '0.35rem' }}>{project.description}</p>
+                  {project.outcomes && project.outcomes.length > 0 && (
+                    <div style={{ marginTop: '0.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.07)', paddingTop: '0.45rem' }}>
+                      <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-orchestrator)', fontWeight: 600, marginBottom: '0.25rem' }}>
+                        Key Results & Outcomes
+                      </div>
+                      <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: '1.4', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                        {project.outcomes.map((outcome, idx) => (
+                          <li key={idx} style={{ wordBreak: 'break-word' }}>{outcome}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
 
-                <div className="project-tags" style={{ marginTop: '0.25rem' }}>
+                <div className="project-tags" style={{ marginTop: '0.35rem' }}>
                   {project.techStack.slice(0, 4).map(tech => (
                     <span key={tech} className="tag">{tech}</span>
                   ))}
@@ -1497,7 +1098,13 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
             >
               Summary
             </button>
-            <button 
+            <button
+              onClick={() => setActiveTab('consulting')}
+              className={`cv-tab-btn ${activeTab === 'consulting' ? 'active' : ''}`}
+            >
+              Work With Me
+            </button>
+            <button
               onClick={() => setActiveTab('job-matcher')}
               className={`cv-tab-btn job-matcher-tab-btn ${activeTab === 'job-matcher' ? 'active' : ''}`}
             >
@@ -1552,9 +1159,9 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
             
             {/* EXECUTIVE SUMMARY */}
             {activeTab === 'summary' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', width: '100%', boxSizing: 'border-box' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', width: '100%', boxSizing: 'border-box', minWidth: 0, overflowWrap: 'anywhere' }}>
                 <h4 style={{ fontSize: '1.1rem', wordBreak: 'break-word' }}>Executive Profile</h4>
-                <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '0.85rem', wordBreak: 'break-word' }}>
+                <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '0.85rem', wordBreak: 'break-word', overflowWrap: 'anywhere', minWidth: 0 }}>
                   {cvData.personalInfo.summary}
                 </p>
                 <div style={{ marginTop: '0.5rem', padding: '0.75rem', borderLeft: '3px solid var(--color-strategy)', background: 'rgba(var(--color-strategy-rgb), 0.04)', width: '100%', boxSizing: 'border-box' }}>
@@ -1566,6 +1173,52 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                     {renderMarkdown('Active doctoral researcher in emerging markets AI strategic framework adaptations. Developing quantitative structures to evaluate enterprise **Return on Resilience (ROR)** over a 9-agent AI simulation stack.')}
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* CONSULTING OFFER */}
+            {activeTab === 'consulting' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', width: '100%', boxSizing: 'border-box' }}>
+                <h4 style={{ fontSize: '1.1rem', wordBreak: 'break-word' }}>{cvData.consulting.practice}</h4>
+                <p style={{ color: 'var(--text-primary)', lineHeight: '1.5', fontSize: '0.9rem', fontWeight: 600, wordBreak: 'break-word' }}>
+                  {cvData.consulting.headline}
+                </p>
+                <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '0.85rem', wordBreak: 'break-word' }}>
+                  {cvData.consulting.pitch}
+                </p>
+                <a href={cvData.consulting.cta.mailto} className="btn btn-primary" style={{ alignSelf: 'flex-start' }}>
+                  <Send size={14} />
+                  {cvData.consulting.cta.label}
+                </a>
+
+                <h4 style={{ fontSize: '0.95rem', marginTop: '0.5rem' }}>Services</h4>
+                {cvData.consulting.services.map((svc, index) => (
+                  <div key={index} className="glass-panel competency-card" style={{ padding: '0.75rem' }}>
+                    <h4 style={{ fontSize: '0.85rem', marginBottom: '0.3rem' }}>{svc.name}</h4>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.4', marginBottom: '0.3rem' }}>
+                      <strong>Outcome:</strong> {svc.outcome}
+                    </p>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+                      {svc.deliverables}
+                    </p>
+                  </div>
+                ))}
+
+                <h4 style={{ fontSize: '0.95rem', marginTop: '0.5rem' }}>Case Studies</h4>
+                {cvData.consulting.caseStudies.map((cs, index) => (
+                  <div key={index} style={{ padding: '0.75rem', borderLeft: '3px solid var(--color-strategy)', background: 'rgba(var(--color-strategy-rgb), 0.04)', width: '100%', boxSizing: 'border-box' }}>
+                    <h4 style={{ fontSize: '0.85rem', color: 'var(--color-strategy)', marginBottom: '0.3rem', wordBreak: 'break-word' }}>{cs.client}</h4>
+                    <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: '1.4', marginBottom: '0.3rem' }}>{cs.context}</p>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.45' }}>{cs.result}</p>
+                  </div>
+                ))}
+
+                <h4 style={{ fontSize: '0.95rem', marginTop: '0.5rem' }}>How We Can Work Together</h4>
+                <ul className="timeline-bullets" style={{ gap: '0.25rem', paddingLeft: '0.75rem' }}>
+                  {cvData.consulting.engagementModels.map((model, index) => (
+                    <li key={index} style={{ fontSize: '0.8rem', lineHeight: '1.4' }}>{model}</li>
+                  ))}
+                </ul>
               </div>
             )}
 
@@ -1675,7 +1328,7 @@ With 13+ years spanning enterprise AI strategy, C-suite analytics, and productio
                   AI Job Spec Suitability Matcher
                 </h4>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.4', wordBreak: 'break-word' }}>
-                  Paste a job description or spec details below. My AI twin will run a matching evaluation against my 10+ years of production experience and academic research.
+                  Paste a job description or spec details below. My AI twin will run a matching evaluation against my 17 years of production experience and academic research.
                 </p>
                 
                 <textarea
